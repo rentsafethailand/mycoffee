@@ -1865,6 +1865,140 @@
     </div>
   </div>
 
+  <!-- Product Option Modal -->
+  <div class="modal-overlay" id="productOptionModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800" id="productOptionModalTitle">เพิ่มตัวเลือกสินค้า</h2>
+        <button onclick="closeProductOptionModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="productOptionForm" onsubmit="saveProductOption(event)">
+          <input type="hidden" id="optionId">
+
+          <div class="form-group">
+            <label>ชื่อกลุ่มตัวเลือก *</label>
+            <input type="text" id="optionGroupName" class="form-control" required placeholder="เช่น: ขนาด, หวาน, เย็น">
+          </div>
+
+          <div class="form-group">
+            <label>ประเภทการเลือก *</label>
+            <select id="optionGroupType" class="form-control" required>
+              <option value="single">เลือกได้ 1 รายการ</option>
+              <option value="multiple">เลือกได้หลายรายการ</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>ชื่อตัวเลือก *</label>
+            <input type="text" id="optionName" class="form-control" required placeholder="เช่น: เล็ก, กลาง, ใหญ่">
+          </div>
+
+          <div class="form-group">
+            <label>ราคาเพิ่ม/ลด (บาท) *</label>
+            <input type="number" id="optionPriceModifier" class="form-control" step="0.01" value="0" required>
+            <small class="text-gray-500">ใส่เลขติดลบเพื่อลดราคา เช่น -5 จะลดราคา 5 บาท</small>
+          </div>
+
+          <div class="form-group">
+            <label>ตัวคูณวัตถุดิบ *</label>
+            <select id="optionMaterialMultiplier" class="form-control" required>
+              <option value="0.7">0.7x (เล็ก)</option>
+              <option value="1.0" selected>1.0x (กลาง)</option>
+              <option value="1.3">1.3x (ใหญ่)</option>
+            </select>
+            <small class="text-gray-500">ใช้สำหรับคำนวณวัตถุดิบที่ใช้</small>
+          </div>
+
+          <div class="form-group">
+            <label>วัตถุดิบพิเศษ</label>
+            <input type="text" id="optionSpecialMaterials" class="form-control" placeholder="นม:50,น้ำตาล:10">
+            <small class="text-gray-500">รูปแบบ: ชื่อวัตถุดิบ:จำนวน,ชื่อวัตถุดิบ:จำนวน</small>
+          </div>
+
+          <div class="form-group">
+            <label>ลำดับการแสดง *</label>
+            <input type="number" id="optionOrder" class="form-control" value="1" min="1" required>
+          </div>
+
+          <div class="form-group">
+            <label>สถานะ *</label>
+            <select id="optionStatus" class="form-control" required>
+              <option value="เปิดใช้งาน">เปิดใช้งาน</option>
+              <option value="ปิดใช้งาน">ปิดใช้งาน</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeProductOptionModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="document.getElementById('productOptionForm').requestSubmit()" class="btn btn-primary">
+          <i class="fas fa-save"></i> บันทึก
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Cost Modal -->
+  <div class="modal-overlay" id="dailyCostModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800" id="dailyCostModalTitle">เพิ่มรายจ่ายรายวัน</h2>
+        <button onclick="closeDailyCostModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="dailyCostForm" onsubmit="saveDailyCost(event)">
+          <input type="hidden" id="costId">
+
+          <div class="form-group">
+            <label>วันที่ *</label>
+            <input type="date" id="costDate" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>ประเภทค่าใช้จ่าย *</label>
+            <select id="costCategory" class="form-control" required>
+              <option value="วัตถุดิบ">วัตถุดิบ</option>
+              <option value="เงินเดือน">เงินเดือน</option>
+              <option value="ค่าเช่า">ค่าเช่า</option>
+              <option value="ค่าไฟฟ้า">ค่าไฟฟ้า</option>
+              <option value="ค่าน้ำ">ค่าน้ำ</option>
+              <option value="ค่าขนส่ง">ค่าขนส่ง</option>
+              <option value="การตลาด">การตลาด</option>
+              <option value="ซ่อมแซม">ซ่อมแซม</option>
+              <option value="อื่นๆ">อื่นๆ</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>รายละเอียด *</label>
+            <input type="text" id="costDescription" class="form-control" required placeholder="เช่น: ซื้อนมสด 10 ลัง">
+          </div>
+
+          <div class="form-group">
+            <label>จำนวนเงิน (บาท) *</label>
+            <input type="number" id="costAmount" class="form-control" step="0.01" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label>หมายเหตุ</label>
+            <textarea id="costNote" class="form-control" rows="2" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeDailyCostModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="document.getElementById('dailyCostForm').requestSubmit()" class="btn btn-primary">
+          <i class="fas fa-save"></i> บันทึก
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ===================================
     // GLOBAL VARIABLES
@@ -3258,24 +3392,205 @@
     }
 
     function loadOptionsPage() {
-      // Simplified version - show message
       const container = document.getElementById('optionGroupsContainer');
-      container.innerHTML = `
-        <div class="card">
-          <p class="text-gray-600 text-center py-8">
-            <i class="fas fa-info-circle text-4xl mb-3"></i><br>
-            การจัดการตัวเลือกสินค้าสามารถทำได้ผ่านระบบหลังบ้าน<br>
-            กรุณาติดต่อผู้ดูแลระบบ
-          </p>
-        </div>
-      `;
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success && result.groups) {
+            displayOptionGroups(result.groups);
+          } else {
+            container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีตัวเลือกสินค้า</p></div>';
+          }
+        })
+        .withFailureHandler(handleError)
+        .getOptionGroups(currentSheetId);
+    }
+
+    function displayOptionGroups(groups) {
+      const container = document.getElementById('optionGroupsContainer');
+
+      if (!groups || groups.length === 0) {
+        container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีตัวเลือกสินค้า</p></div>';
+        return;
+      }
+
+      let html = '';
+      groups.forEach(group => {
+        const typeText = group.type === 'single' ? 'เลือกได้ 1 รายการ' : 'เลือกได้หลายรายการ';
+
+        html += `
+          <div class="card mb-4">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h3 class="text-lg font-bold text-gray-800">${group.name}</h3>
+                <p class="text-sm text-gray-500">${typeText}</p>
+              </div>
+              <button onclick="showAddOptionModal('${group.name}', '${group.type}')" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> เพิ่มตัวเลือก
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="bg-gray-50">
+                    <th class="px-4 py-2 text-left">ชื่อตัวเลือก</th>
+                    <th class="px-4 py-2 text-right">ราคาเพิ่ม/ลด</th>
+                    <th class="px-4 py-2 text-center">ตัวคูณวัตถุดิบ</th>
+                    <th class="px-4 py-2 text-center">สถานะ</th>
+                    <th class="px-4 py-2 text-center">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody>
+        `;
+
+        group.options.forEach(option => {
+          const priceDisplay = option.priceModifier >= 0 ?
+            `+${option.priceModifier} ฿` :
+            `${option.priceModifier} ฿`;
+          const statusBadge = option.status === 'เปิดใช้งาน' ? 'badge-success' : 'badge-secondary';
+
+          html += `
+            <tr class="border-t">
+              <td class="px-4 py-3">${option.name}</td>
+              <td class="px-4 py-3 text-right font-medium ${option.priceModifier < 0 ? 'text-red-600' : 'text-green-600'}">
+                ${priceDisplay}
+              </td>
+              <td class="px-4 py-3 text-center">
+                <span class="badge badge-info">${option.materialMultiplier}x</span>
+              </td>
+              <td class="px-4 py-3 text-center">
+                <span class="badge ${statusBadge}">${option.status}</span>
+              </td>
+              <td class="px-4 py-3 text-center">
+                <button onclick='editProductOption(${JSON.stringify(option)})' class="btn btn-sm btn-secondary mr-2">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="deleteProductOption('${option.id}')" class="btn btn-sm btn-danger">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
     }
 
     function showAddOptionGroupModal() {
+      document.getElementById('optionId').value = '';
+      document.getElementById('optionGroupName').value = '';
+      document.getElementById('optionGroupType').value = 'single';
+      document.getElementById('optionName').value = '';
+      document.getElementById('optionPriceModifier').value = '0';
+      document.getElementById('optionMaterialMultiplier').value = '1.0';
+      document.getElementById('optionSpecialMaterials').value = '';
+      document.getElementById('optionOrder').value = '1';
+      document.getElementById('optionStatus').value = 'เปิดใช้งาน';
+      document.getElementById('productOptionModalTitle').textContent = 'เพิ่มตัวเลือกสินค้า';
+      document.getElementById('productOptionModal').classList.add('active');
+    }
+
+    function showAddOptionModal(groupName, groupType) {
+      document.getElementById('optionId').value = '';
+      document.getElementById('optionGroupName').value = groupName;
+      document.getElementById('optionGroupType').value = groupType;
+      document.getElementById('optionName').value = '';
+      document.getElementById('optionPriceModifier').value = '0';
+      document.getElementById('optionMaterialMultiplier').value = '1.0';
+      document.getElementById('optionSpecialMaterials').value = '';
+      document.getElementById('optionOrder').value = '1';
+      document.getElementById('optionStatus').value = 'เปิดใช้งาน';
+      document.getElementById('productOptionModalTitle').textContent = 'เพิ่มตัวเลือกใน: ' + groupName;
+      document.getElementById('productOptionModal').classList.add('active');
+    }
+
+    function editProductOption(option) {
+      document.getElementById('optionId').value = option.id;
+      document.getElementById('optionGroupName').value = option.groupName;
+      document.getElementById('optionGroupType').value = option.groupType;
+      document.getElementById('optionName').value = option.name;
+      document.getElementById('optionPriceModifier').value = option.priceModifier;
+      document.getElementById('optionMaterialMultiplier').value = option.materialMultiplier;
+      document.getElementById('optionSpecialMaterials').value = option.specialMaterials || '';
+      document.getElementById('optionOrder').value = option.order;
+      document.getElementById('optionStatus').value = option.status;
+      document.getElementById('productOptionModalTitle').textContent = 'แก้ไขตัวเลือกสินค้า';
+      document.getElementById('productOptionModal').classList.add('active');
+    }
+
+    function closeProductOptionModal() {
+      document.getElementById('productOptionModal').classList.remove('active');
+    }
+
+    function saveProductOption(event) {
+      event.preventDefault();
+
+      const optionData = {
+        id: document.getElementById('optionId').value,
+        groupName: document.getElementById('optionGroupName').value,
+        groupType: document.getElementById('optionGroupType').value,
+        optionName: document.getElementById('optionName').value,
+        priceModifier: document.getElementById('optionPriceModifier').value,
+        materialMultiplier: document.getElementById('optionMaterialMultiplier').value,
+        specialMaterials: document.getElementById('optionSpecialMaterials').value,
+        order: document.getElementById('optionOrder').value,
+        status: document.getElementById('optionStatus').value
+      };
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast(result.message, 'success');
+            closeProductOptionModal();
+            loadOptionsPage();
+            loadProductOptionsData(); // Reload for POS page
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .saveProductOption(currentSheetId, optionData);
+    }
+
+    function deleteProductOption(optionId) {
       Swal.fire({
-        icon: 'info',
-        title: 'ฟีเจอร์นี้ยังไม่เปิดใช้งาน',
-        text: 'กรุณาติดต่อผู้ดูแลระบบเพื่อจัดการตัวเลือกสินค้า'
+        title: 'ยืนยันการลบ',
+        text: 'คุณต้องการลบตัวเลือกนี้ใช่หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          google.script.run
+            .withSuccessHandler(function(result) {
+              if (result.success) {
+                showToast('ลบตัวเลือกสำเร็จ', 'success');
+                loadOptionsPage();
+                loadProductOptionsData(); // Reload for POS page
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด',
+                  text: result.error
+                });
+              }
+            })
+            .withFailureHandler(handleError)
+            .deleteProductOption(currentSheetId, optionId);
+        }
       });
     }
 
@@ -3450,31 +3765,633 @@
     }
 
     function showAddDailyCostModal() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('costId').value = '';
+      document.getElementById('costDate').value = today;
+      document.getElementById('costCategory').value = 'วัตถุดิบ';
+      document.getElementById('costDescription').value = '';
+      document.getElementById('costAmount').value = '';
+      document.getElementById('costNote').value = '';
+      document.getElementById('dailyCostModalTitle').textContent = 'เพิ่มรายจ่ายรายวัน';
+      document.getElementById('dailyCostModal').classList.add('active');
+    }
+
+    function closeDailyCostModal() {
+      document.getElementById('dailyCostModal').classList.remove('active');
+    }
+
+    function saveDailyCost(event) {
+      event.preventDefault();
+
+      const costData = {
+        id: document.getElementById('costId').value,
+        date: document.getElementById('costDate').value,
+        category: document.getElementById('costCategory').value,
+        description: document.getElementById('costDescription').value,
+        amount: document.getElementById('costAmount').value,
+        note: document.getElementById('costNote').value
+      };
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast('บันทึกรายจ่ายสำเร็จ', 'success');
+            closeDailyCostModal();
+            loadDailyCosts();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .saveDailyCost(currentSheetId, costData);
+    }
+
+    function loadDailyCosts() {
+      const date = document.getElementById('dailyCostDate').value;
+      if (!date) {
+        showToast('กรุณาเลือกวันที่', 'warning');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            displayDailyCosts(result.costs);
+          } else {
+            document.getElementById('dailyCostsTableBody').innerHTML =
+              '<tr><td colspan="5" class="text-center text-gray-500 py-8">ไม่มีข้อมูล</td></tr>';
+          }
+        })
+        .withFailureHandler(handleError)
+        .getDailyCosts(currentSheetId, date);
+    }
+
+    function displayDailyCosts(costs) {
+      const tbody = document.getElementById('dailyCostsTableBody');
+
+      if (!costs || costs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">ไม่มีรายจ่ายในวันนี้</td></tr>';
+        return;
+      }
+
+      let html = '';
+      let total = 0;
+
+      costs.forEach(cost => {
+        const amount = parseFloat(cost.จำนวนเงิน || 0);
+        total += amount;
+
+        html += `
+          <tr class="border-t">
+            <td class="px-4 py-3">${cost.ประเภท || '-'}</td>
+            <td class="px-4 py-3">${cost.รายละเอียด || '-'}</td>
+            <td class="px-4 py-3 text-right font-medium">${amount.toFixed(2)}</td>
+            <td class="px-4 py-3 text-sm text-gray-500">${cost.หมายเหตุ || '-'}</td>
+            <td class="px-4 py-3 text-center">
+              <button onclick="editDailyCost('${cost.รหัส}')" class="btn btn-sm btn-secondary mr-2">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteDailyCost('${cost.รหัส}')" class="btn btn-sm btn-danger">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      // Add total row
+      html += `
+        <tr class="border-t bg-gray-50 font-bold">
+          <td colspan="2" class="px-4 py-3 text-right">รวม:</td>
+          <td class="px-4 py-3 text-right text-green-600">${total.toFixed(2)} ฿</td>
+          <td colspan="2"></td>
+        </tr>
+      `;
+
+      tbody.innerHTML = html;
+    }
+
+    function editDailyCost(costId) {
+      // Find cost in current data
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success && result.cost) {
+            const cost = result.cost;
+            document.getElementById('costId').value = cost.รหัส;
+            document.getElementById('costDate').value = cost.วันที่;
+            document.getElementById('costCategory').value = cost.ประเภท;
+            document.getElementById('costDescription').value = cost.รายละเอียด;
+            document.getElementById('costAmount').value = cost.จำนวนเงิน;
+            document.getElementById('costNote').value = cost.หมายเหตุ || '';
+            document.getElementById('dailyCostModalTitle').textContent = 'แก้ไขรายจ่าย';
+            document.getElementById('dailyCostModal').classList.add('active');
+          }
+        })
+        .withFailureHandler(handleError)
+        .getDailyCost(currentSheetId, costId);
+    }
+
+    function deleteDailyCost(costId) {
       Swal.fire({
-        icon: 'info',
-        title: 'ฟีเจอร์นี้ยังไม่เปิดใช้งาน',
-        text: 'กรุณาติดต่อผู้ดูแลระบบ'
+        title: 'ยืนยันการลบ',
+        text: 'คุณต้องการลบรายจ่ายนี้ใช่หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          google.script.run
+            .withSuccessHandler(function(result) {
+              if (result.success) {
+                showToast('ลบรายจ่ายสำเร็จ', 'success');
+                loadDailyCosts();
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด',
+                  text: result.error
+                });
+              }
+            })
+            .withFailureHandler(handleError)
+            .deleteDailyCost(currentSheetId, costId);
+        }
       });
     }
 
     function loadMonthlyCosts() {
-      showToast('โหลดข้อมูลรายเดือน', 'info');
+      const month = document.getElementById('monthlyCostMonth').value;
+      const year = document.getElementById('monthlyCostYear').value;
+
+      if (!month || !year) {
+        showToast('กรุณาเลือกเดือนและปี', 'warning');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            displayMonthlyCosts(result.summary);
+          } else {
+            document.getElementById('monthlyCostsSummary').innerHTML =
+              '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
+          }
+        })
+        .withFailureHandler(handleError)
+        .getMonthlyCostsSummary(currentSheetId, month, year);
+    }
+
+    function displayMonthlyCosts(summary) {
+      const container = document.getElementById('monthlyCostsSummary');
+
+      if (!summary) {
+        container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
+        return;
+      }
+
+      const totalCost = parseFloat(summary.totalCost || 0);
+      const totalSales = parseFloat(summary.totalSales || 0);
+      const profit = totalSales - totalCost;
+      const profitColor = profit >= 0 ? 'text-green-600' : 'text-red-600';
+
+      let html = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">ต้นทุนรวม</h3>
+            <p class="text-2xl font-bold text-red-600">${totalCost.toFixed(2)} ฿</p>
+          </div>
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">ยอดขายรวม</h3>
+            <p class="text-2xl font-bold text-blue-600">${totalSales.toFixed(2)} ฿</p>
+          </div>
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">กำไร/ขาดทุน</h3>
+            <p class="text-2xl font-bold ${profitColor}">${profit.toFixed(2)} ฿</p>
+          </div>
+        </div>
+
+        <div class="card mb-6">
+          <h3 class="text-lg font-bold mb-4">สรุปตามประเภท</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="px-4 py-2 text-left">ประเภท</th>
+                  <th class="px-4 py-2 text-right">จำนวนเงิน</th>
+                  <th class="px-4 py-2 text-right">% ของค่าใช้จ่ายทั้งหมด</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+
+      if (summary.categoryTotals && summary.categoryTotals.length > 0) {
+        summary.categoryTotals.forEach(cat => {
+          const amount = parseFloat(cat.amount || 0);
+          const percent = totalCost > 0 ? (amount / totalCost * 100).toFixed(1) : 0;
+
+          html += `
+            <tr class="border-t">
+              <td class="px-4 py-3">${cat.category}</td>
+              <td class="px-4 py-3 text-right font-medium">${amount.toFixed(2)} ฿</td>
+              <td class="px-4 py-3 text-right">${percent}%</td>
+            </tr>
+          `;
+        });
+      }
+
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-lg font-bold mb-4">รายละเอียดรายวัน</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="px-4 py-2 text-left">วันที่</th>
+                  <th class="px-4 py-2 text-right">จำนวนรายการ</th>
+                  <th class="px-4 py-2 text-right">รวมเงิน</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+
+      if (summary.dailyCosts && summary.dailyCosts.length > 0) {
+        summary.dailyCosts.forEach(day => {
+          html += `
+            <tr class="border-t">
+              <td class="px-4 py-3">${day.date}</td>
+              <td class="px-4 py-3 text-right">${day.count} รายการ</td>
+              <td class="px-4 py-3 text-right font-medium">${parseFloat(day.total).toFixed(2)} ฿</td>
+            </tr>
+          `;
+        });
+      } else {
+        html += '<tr><td colspan="3" class="text-center text-gray-500 py-8">ไม่มีรายจ่าย</td></tr>';
+      }
+
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
     }
 
     function loadReportsPage() {
-      // Already rendered
+      // Set default dates for reports
+      const today = new Date().toISOString().split('T')[0];
+      const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+
+      if (document.getElementById('salesStartDate')) {
+        document.getElementById('salesStartDate').value = firstDayOfMonth;
+        document.getElementById('salesEndDate').value = today;
+      }
+
+      if (document.getElementById('plMonth')) {
+        document.getElementById('plMonth').value = String(new Date().getMonth() + 1).padStart(2, '0');
+        document.getElementById('plYear').value = new Date().getFullYear();
+      }
+
+      if (document.getElementById('bestSellerStartDate')) {
+        document.getElementById('bestSellerStartDate').value = firstDayOfMonth;
+        document.getElementById('bestSellerEndDate').value = today;
+      }
     }
 
     function showSalesReport() {
+      const startDate = document.getElementById('salesStartDate').value;
+      const endDate = document.getElementById('salesEndDate').value;
+
+      if (!startDate || !endDate) {
+        showToast('กรุณาเลือกช่วงวันที่', 'warning');
+        return;
+      }
+
       showToast('กำลังสร้างรายงาน...', 'info');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            displaySalesReport(result.report);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error || 'ไม่สามารถสร้างรายงานได้'
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .getSalesReport(currentSheetId, startDate, endDate);
+    }
+
+    function displaySalesReport(report) {
+      const container = document.getElementById('salesReportResult');
+
+      if (!report) {
+        container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
+        return;
+      }
+
+      const totalSales = parseFloat(report.totalSales || 0);
+      const totalOrders = parseInt(report.totalOrders || 0);
+      const averageOrder = parseFloat(report.averageOrder || 0);
+
+      let html = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">ยอดขายรวม</h3>
+            <p class="text-2xl font-bold text-green-600">${totalSales.toFixed(2)} ฿</p>
+          </div>
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">จำนวนออเดอร์</h3>
+            <p class="text-2xl font-bold text-blue-600">${totalOrders}</p>
+          </div>
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">ยอดเฉลี่ย/ออเดอร์</h3>
+            <p class="text-2xl font-bold text-purple-600">${averageOrder.toFixed(2)} ฿</p>
+          </div>
+        </div>
+
+        <div class="card mb-6">
+          <h3 class="text-lg font-bold mb-4">ยอดขายรายวัน</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="px-4 py-2 text-left">วันที่</th>
+                  <th class="px-4 py-2 text-right">จำนวนออเดอร์</th>
+                  <th class="px-4 py-2 text-right">ยอดขาย</th>
+                  <th class="px-4 py-2 text-right">เฉลี่ย/ออเดอร์</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+
+      if (report.dailySales && report.dailySales.length > 0) {
+        report.dailySales.forEach(day => {
+          const sales = parseFloat(day.sales || 0);
+          const orders = parseInt(day.orders || 0);
+          const avg = orders > 0 ? sales / orders : 0;
+
+          html += `
+            <tr class="border-t">
+              <td class="px-4 py-3">${day.date}</td>
+              <td class="px-4 py-3 text-right">${orders}</td>
+              <td class="px-4 py-3 text-right font-medium text-green-600">${sales.toFixed(2)} ฿</td>
+              <td class="px-4 py-3 text-right">${avg.toFixed(2)} ฿</td>
+            </tr>
+          `;
+        });
+      } else {
+        html += '<tr><td colspan="4" class="text-center text-gray-500 py-8">ไม่มีข้อมูลยอดขาย</td></tr>';
+      }
+
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-lg font-bold mb-4">ช่องทางการชำระเงิน</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="px-4 py-2 text-left">ช่องทาง</th>
+                  <th class="px-4 py-2 text-right">จำนวนเงิน</th>
+                  <th class="px-4 py-2 text-right">% ของยอดรวม</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+
+      if (report.paymentMethods && report.paymentMethods.length > 0) {
+        report.paymentMethods.forEach(method => {
+          const amount = parseFloat(method.amount || 0);
+          const percent = totalSales > 0 ? (amount / totalSales * 100).toFixed(1) : 0;
+
+          html += `
+            <tr class="border-t">
+              <td class="px-4 py-3">${method.method}</td>
+              <td class="px-4 py-3 text-right font-medium">${amount.toFixed(2)} ฿</td>
+              <td class="px-4 py-3 text-right">${percent}%</td>
+            </tr>
+          `;
+        });
+      } else {
+        html += '<tr><td colspan="3" class="text-center text-gray-500 py-8">ไม่มีข้อมูล</td></tr>';
+      }
+
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
     }
 
     function showProfitLossReport() {
+      const month = document.getElementById('plMonth').value;
+      const year = document.getElementById('plYear').value;
+
+      if (!month || !year) {
+        showToast('กรุณาเลือกเดือนและปี', 'warning');
+        return;
+      }
+
       showToast('กำลังสร้างรายงาน...', 'info');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            displayProfitLossReport(result.report);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error || 'ไม่สามารถสร้างรายงานได้'
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .getProfitLossReport(currentSheetId, month, year);
+    }
+
+    function displayProfitLossReport(report) {
+      const container = document.getElementById('profitLossResult');
+
+      if (!report) {
+        container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
+        return;
+      }
+
+      const totalSales = parseFloat(report.totalSales || 0);
+      const productCost = parseFloat(report.productCost || 0);
+      const operatingCosts = parseFloat(report.operatingCosts || 0);
+      const grossProfit = parseFloat(report.grossProfit || 0);
+      const netProfit = parseFloat(report.netProfit || 0);
+      const profitMargin = parseFloat(report.profitMargin || 0);
+
+      const netProfitColor = netProfit >= 0 ? 'text-green-600' : 'text-red-600';
+      const profitMarginColor = profitMargin >= 0 ? 'text-green-600' : 'text-red-600';
+
+      let html = `
+        <div class="card">
+          <h3 class="text-lg font-bold mb-4">รายงานกำไร-ขาดทุน</h3>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+              <span class="text-gray-600">รายได้จากการขาย</span>
+              <span class="text-xl font-bold text-blue-600">${totalSales.toFixed(2)} ฿</span>
+            </div>
+
+            <div class="flex justify-between items-center border-b pb-3">
+              <span class="text-gray-600">ต้นทุนสินค้า (วัตถุดิบ)</span>
+              <span class="text-xl font-medium text-red-600">-${productCost.toFixed(2)} ฿</span>
+            </div>
+
+            <div class="flex justify-between items-center border-b pb-3 bg-gray-50 px-4 -mx-4">
+              <span class="font-medium">กำไรขั้นต้น</span>
+              <span class="text-xl font-bold text-green-600">${grossProfit.toFixed(2)} ฿</span>
+            </div>
+
+            <div class="flex justify-between items-center border-b pb-3">
+              <span class="text-gray-600">ค่าใช้จ่ายดำเนินงาน</span>
+              <span class="text-xl font-medium text-red-600">-${operatingCosts.toFixed(2)} ฿</span>
+            </div>
+
+            <div class="flex justify-between items-center border-b pb-3 bg-gray-50 px-4 -mx-4">
+              <span class="font-bold text-lg">กำไรสุทธิ</span>
+              <span class="text-2xl font-bold ${netProfitColor}">${netProfit.toFixed(2)} ฿</span>
+            </div>
+
+            <div class="flex justify-between items-center bg-blue-50 px-4 -mx-4 py-3 rounded">
+              <span class="font-medium">อัตรากำไรสุทธิ</span>
+              <span class="text-xl font-bold ${profitMarginColor}">${profitMargin.toFixed(2)}%</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
     }
 
     function showBestSellersReport() {
+      const startDate = document.getElementById('bestSellerStartDate').value;
+      const endDate = document.getElementById('bestSellerEndDate').value;
+      const limit = parseInt(document.getElementById('bestSellerLimit').value) || 10;
+
+      if (!startDate || !endDate) {
+        showToast('กรุณาเลือกช่วงวันที่', 'warning');
+        return;
+      }
+
       showToast('กำลังสร้างรายงาน...', 'info');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            displayBestSellersReport(result.report);
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error || 'ไม่สามารถสร้างรายงานได้'
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .getBestSellersReport(currentSheetId, startDate, endDate, limit);
+    }
+
+    function displayBestSellersReport(report) {
+      const container = document.getElementById('bestSellersResult');
+
+      if (!report || report.length === 0) {
+        container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
+        return;
+      }
+
+      let totalQuantity = 0;
+      let totalRevenue = 0;
+
+      report.forEach(item => {
+        totalQuantity += parseInt(item.quantity || 0);
+        totalRevenue += parseFloat(item.revenue || 0);
+      });
+
+      let html = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">จำนวนสินค้าที่ขายทั้งหมด</h3>
+            <p class="text-2xl font-bold text-blue-600">${totalQuantity} ชิ้น</p>
+          </div>
+          <div class="card">
+            <h3 class="text-sm text-gray-600 mb-2">รายได้รวม</h3>
+            <p class="text-2xl font-bold text-green-600">${totalRevenue.toFixed(2)} ฿</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-lg font-bold mb-4">สินค้าขายดี Top ${report.length}</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="px-4 py-2 text-center">อันดับ</th>
+                  <th class="px-4 py-2 text-left">ชื่อสินค้า</th>
+                  <th class="px-4 py-2 text-right">จำนวนที่ขาย</th>
+                  <th class="px-4 py-2 text-right">รายได้</th>
+                  <th class="px-4 py-2 text-right">% ของยอดรวม</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+
+      report.forEach((item, index) => {
+        const quantity = parseInt(item.quantity || 0);
+        const revenue = parseFloat(item.revenue || 0);
+        const percent = totalRevenue > 0 ? (revenue / totalRevenue * 100).toFixed(1) : 0;
+
+        // Medal emoji for top 3
+        let rankDisplay = index + 1;
+        if (index === 0) rankDisplay = '🥇 1';
+        else if (index === 1) rankDisplay = '🥈 2';
+        else if (index === 2) rankDisplay = '🥉 3';
+
+        html += `
+          <tr class="border-t">
+            <td class="px-4 py-3 text-center font-bold">${rankDisplay}</td>
+            <td class="px-4 py-3">${item.productName}</td>
+            <td class="px-4 py-3 text-right font-medium">${quantity}</td>
+            <td class="px-4 py-3 text-right font-medium text-green-600">${revenue.toFixed(2)} ฿</td>
+            <td class="px-4 py-3 text-right">${percent}%</td>
+          </tr>
+        `;
+      });
+
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
     }
 
     function loadOrderHistory() {

@@ -886,6 +886,65 @@ function updateProductOption(sheetId, optionId, optionData) {
 }
 
 /**
+ * สร้างตัวเลือกสินค้าใหม่
+ */
+function createProductOption(sheetId, optionData) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('ตัวเลือกสินค้า');
+
+    // Generate new option ID
+    var data = sheet.getDataRange().getValues();
+    var maxId = 0;
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][0]) {
+        var idNum = parseInt(data[i][0].replace(/[^\d]/g, ''));
+        if (idNum > maxId) maxId = idNum;
+      }
+    }
+    var newId = 'OP' + String(maxId + 1).padStart(3, '0');
+
+    // Add new row
+    sheet.appendRow([
+      newId,
+      optionData.groupName || '',
+      optionData.groupType || 'single',
+      optionData.optionName || '',
+      parseFloat(optionData.priceModifier) || 0,
+      parseFloat(optionData.materialMultiplier) || 1.0,
+      optionData.specialMaterials || '',
+      parseInt(optionData.order) || 1,
+      optionData.status || 'เปิดใช้งาน'
+    ]);
+
+    return {
+      success: true,
+      message: 'เพิ่มตัวเลือกสำเร็จ',
+      optionId: newId
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * บันทึกตัวเลือกสินค้า (Create or Update)
+ */
+function saveProductOption(sheetId, optionData) {
+  if (optionData.id) {
+    // Update existing
+    return updateProductOption(sheetId, optionData.id, optionData);
+  } else {
+    // Create new
+    return createProductOption(sheetId, optionData);
+  }
+}
+
+/**
  * ลบตัวเลือกสินค้า
  */
 function deleteProductOption(sheetId, optionId) {
@@ -906,6 +965,59 @@ function deleteProductOption(sheetId, optionId) {
     }
 
     throw new Error('ไม่พบตัวเลือกนี้');
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * ดึงรายการกลุ่มตัวเลือกทั้งหมด (ไม่ซ้ำ)
+ */
+function getOptionGroups(sheetId) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('ตัวเลือกสินค้า');
+    var data = sheet.getDataRange().getValues();
+
+    var groups = {};
+
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][1]) { // มีชื่อกลุ่ม
+        var groupName = data[i][1];
+        if (!groups[groupName]) {
+          groups[groupName] = {
+            name: groupName,
+            type: data[i][2] || 'single',
+            options: []
+          };
+        }
+
+        groups[groupName].options.push({
+          id: data[i][0],
+          name: data[i][3],
+          priceModifier: parseFloat(data[i][4]) || 0,
+          materialMultiplier: parseFloat(data[i][5]) || 1.0,
+          order: parseInt(data[i][7]) || 1,
+          status: data[i][8] || 'เปิดใช้งาน'
+        });
+      }
+    }
+
+    // Convert to array and sort options
+    var groupArray = [];
+    for (var key in groups) {
+      groups[key].options.sort(function(a, b) { return a.order - b.order; });
+      groupArray.push(groups[key]);
+    }
+
+    return {
+      success: true,
+      data: groupArray
+    };
 
   } catch (error) {
     return {
@@ -2572,6 +2684,510 @@ function isInMonth(dateStr, month, year) {
   }
 }
 
+// ===================================
+// REPORTS FUNCTIONS
+// ===================================
+
+/**
+ * รายงานยอดขาย
+ */
+function getSalesReport(sheetId, startDate, endDate) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('การขาย');
+    var data = sheet.getDataRange().getValues();
+
+    var start = new Date(startDate);
+    var end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    var dailySales = {};
+    var totalSales = 0;
+    var totalOrders = 0;
+    var paymentMethods = {};
+
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][0]) {
+        var orderDate = new Date(data[i][1]);
+
+        if (orderDate >= start && orderDate <= end) {
+          var dateKey = Utilities.formatDate(orderDate, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+          var amount = parseFloat(data[i][5]) || 0;
+          var payment = data[i][6] || 'เงินสด';
+
+          // Daily sales
+          if (!dailySales[dateKey]) {
+            dailySales[dateKey] = 0;
+          }
+          dailySales[dateKey] += amount;
+
+          // Total
+          totalSales += amount;
+          totalOrders++;
+
+          // Payment methods
+          if (!paymentMethods[payment]) {
+            paymentMethods[payment] = 0;
+          }
+          paymentMethods[payment] += amount;
+        }
+      }
+    }
+
+    // Convert to arrays
+    var dailyArray = [];
+    for (var key in dailySales) {
+      dailyArray.push({
+        date: key,
+        sales: dailySales[key]
+      });
+    }
+    dailyArray.sort(function(a, b) {
+      return a.date > b.date ? 1 : -1;
+    });
+
+    var paymentArray = [];
+    for (var key in paymentMethods) {
+      paymentArray.push({
+        method: key,
+        amount: paymentMethods[key],
+        percentage: (paymentMethods[key] / totalSales * 100).toFixed(2)
+      });
+    }
+
+    return {
+      success: true,
+      data: {
+        totalSales: totalSales,
+        totalOrders: totalOrders,
+        averageOrder: totalOrders > 0 ? (totalSales / totalOrders) : 0,
+        dailySales: dailyArray,
+        paymentMethods: paymentArray
+      }
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * รายงานกำไร-ขาดทุน
+ */
+function getProfitLossReport(sheetId, month, year) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var salesSheet = ss.getSheetByName('การขาย');
+    var costsSheet = ss.getSheetByName('ต้นทุน');
+
+    var startDate = new Date(year, month - 1, 1);
+    var endDate = new Date(year, month, 0, 23, 59, 59, 999);
+
+    // Calculate sales
+    var salesData = salesSheet.getDataRange().getValues();
+    var totalSales = 0;
+    var totalCost = 0;
+
+    for (var i = 1; i < salesData.length; i++) {
+      if (salesData[i][0]) {
+        var orderDate = new Date(salesData[i][1]);
+        if (orderDate >= startDate && orderDate <= endDate) {
+          totalSales += parseFloat(salesData[i][5]) || 0;
+          totalCost += parseFloat(salesData[i][10]) || 0; // ต้นทุนสินค้า
+        }
+      }
+    }
+
+    // Calculate other costs
+    var costsData = costsSheet.getDataRange().getValues();
+    var operatingCosts = 0;
+    var costsByCategory = {};
+
+    for (var i = 1; i < costsData.length; i++) {
+      if (costsData[i][0]) {
+        var costDate = new Date(costsData[i][0]);
+        if (costDate >= startDate && costDate <= endDate) {
+          var amount = parseFloat(costsData[i][2]) || 0;
+          var category = costsData[i][1] || 'อื่นๆ';
+
+          operatingCosts += amount;
+
+          if (!costsByCategory[category]) {
+            costsByCategory[category] = 0;
+          }
+          costsByCategory[category] += amount;
+        }
+      }
+    }
+
+    var totalCosts = totalCost + operatingCosts;
+    var grossProfit = totalSales - totalCost;
+    var netProfit = totalSales - totalCosts;
+    var profitMargin = totalSales > 0 ? (netProfit / totalSales * 100) : 0;
+
+    // Convert costs to array
+    var costsArray = [];
+    for (var key in costsByCategory) {
+      costsArray.push({
+        category: key,
+        amount: costsByCategory[key]
+      });
+    }
+
+    return {
+      success: true,
+      data: {
+        totalSales: totalSales,
+        productCost: totalCost,
+        operatingCosts: operatingCosts,
+        totalCosts: totalCosts,
+        grossProfit: grossProfit,
+        netProfit: netProfit,
+        profitMargin: profitMargin,
+        costsByCategory: costsArray
+      }
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * รายงานสินค้าขายดี
+ */
+function getBestSellersReport(sheetId, startDate, endDate, limit) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('การขาย');
+    var data = sheet.getDataRange().getValues();
+
+    var start = new Date(startDate);
+    var end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    var productSales = {};
+
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][0]) {
+        var orderDate = new Date(data[i][1]);
+
+        if (orderDate >= start && orderDate <= end) {
+          var items = data[i][4] || '';
+          var amount = parseFloat(data[i][5]) || 0;
+
+          // Parse items (format: "สินค้า1 x2, สินค้า2 x1")
+          var itemList = items.split(',');
+
+          for (var j = 0; j < itemList.length; j++) {
+            var item = itemList[j].trim();
+            var match = item.match(/(.+?)\s+x(\d+)/);
+
+            if (match) {
+              var productName = match[1].trim();
+              var quantity = parseInt(match[2]) || 0;
+
+              if (!productSales[productName]) {
+                productSales[productName] = {
+                  name: productName,
+                  quantity: 0,
+                  revenue: 0
+                };
+              }
+
+              productSales[productName].quantity += quantity;
+              // Estimate revenue (split total evenly)
+              productSales[productName].revenue += (amount / itemList.length);
+            }
+          }
+        }
+      }
+    }
+
+    // Convert to array and sort
+    var productArray = [];
+    for (var key in productSales) {
+      productArray.push(productSales[key]);
+    }
+
+    productArray.sort(function(a, b) {
+      return b.quantity - a.quantity;
+    });
+
+    // Limit results
+    if (limit && limit > 0) {
+      productArray = productArray.slice(0, limit);
+    }
+
+    return {
+      success: true,
+      data: productArray
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+// ===================================
+// COSTS MANAGEMENT FUNCTIONS
+// ===================================
+
+/**
+ * ดึงรายจ่ายรายวัน
+ */
+function getDailyCosts(sheetId, date) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('ต้นทุน');
+    var data = sheet.getDataRange().getValues();
+
+    var targetDate = new Date(date);
+    var costs = [];
+
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][0]) {
+        var costDate = new Date(data[i][0]);
+
+        if (Utilities.formatDate(costDate, Session.getScriptTimeZone(), 'yyyy-MM-dd') ===
+            Utilities.formatDate(targetDate, Session.getScriptTimeZone(), 'yyyy-MM-dd')) {
+
+          costs.push({
+            id: 'COST' + i,
+            date: Utilities.formatDate(costDate, Session.getScriptTimeZone(), 'yyyy-MM-dd'),
+            category: data[i][1] || '',
+            description: data[i][3] || '',
+            amount: parseFloat(data[i][2]) || 0,
+            note: data[i][4] || ''
+          });
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: costs
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * บันทึกรายจ่ายรายวัน
+ */
+function saveDailyCost(sheetId, costData) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('ต้นทุน');
+
+    if (costData.id && costData.id.startsWith('COST')) {
+      // Update existing
+      var rowIndex = parseInt(costData.id.replace('COST', ''));
+      sheet.getRange(rowIndex, 1).setValue(new Date(costData.date));
+      sheet.getRange(rowIndex, 2).setValue(costData.category);
+      sheet.getRange(rowIndex, 3).setValue(parseFloat(costData.amount) || 0);
+      sheet.getRange(rowIndex, 4).setValue(costData.description);
+      sheet.getRange(rowIndex, 5).setValue(costData.note);
+    } else {
+      // Create new
+      sheet.appendRow([
+        new Date(costData.date),
+        costData.category || '',
+        parseFloat(costData.amount) || 0,
+        costData.description || '',
+        costData.note || ''
+      ]);
+    }
+
+    return {
+      success: true,
+      message: 'บันทึกรายจ่ายสำเร็จ'
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * ดึงข้อมูลรายจ่ายรายวันตาม ID
+ */
+function getDailyCost(sheetId, costId) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('ต้นทุน');
+
+    if (costId && costId.startsWith('COST')) {
+      var rowIndex = parseInt(costId.replace('COST', ''));
+      var row = sheet.getRange(rowIndex, 1, 1, 5).getValues()[0];
+
+      var cost = {
+        'รหัส': costId,
+        'วันที่': row[0] ? Utilities.formatDate(new Date(row[0]), Session.getScriptTimeZone(), 'yyyy-MM-dd') : '',
+        'ประเภท': row[1] || '',
+        'จำนวนเงิน': row[2] || 0,
+        'รายละเอียด': row[3] || '',
+        'หมายเหตุ': row[4] || ''
+      };
+
+      return {
+        success: true,
+        cost: cost
+      };
+    }
+
+    throw new Error('ไม่พบรายจ่ายนี้');
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * ลบรายจ่ายรายวัน
+ */
+function deleteDailyCost(sheetId, costId) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('ต้นทุน');
+
+    if (costId && costId.startsWith('COST')) {
+      var rowIndex = parseInt(costId.replace('COST', ''));
+      sheet.deleteRow(rowIndex);
+
+      return {
+        success: true,
+        message: 'ลบรายจ่ายสำเร็จ'
+      };
+    }
+
+    throw new Error('ไม่พบรายจ่ายนี้');
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
+/**
+ * สรุปต้นทุนรายเดือน
+ */
+function getMonthlyCostsSummary(sheetId, month, year) {
+  try {
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName('ต้นทุน');
+    var salesSheet = ss.getSheetByName('การขาย');
+
+    var data = sheet.getDataRange().getValues();
+    var salesData = salesSheet.getDataRange().getValues();
+
+    var startDate = new Date(year, month - 1, 1);
+    var endDate = new Date(year, month, 0, 23, 59, 59, 999);
+
+    var dailyCosts = {};
+    var categoryTotals = {};
+    var totalCost = 0;
+    var totalSales = 0;
+
+    // Calculate costs
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][0]) {
+        var costDate = new Date(data[i][0]);
+
+        if (costDate >= startDate && costDate <= endDate) {
+          var dateKey = Utilities.formatDate(costDate, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+          var category = data[i][1] || 'อื่นๆ';
+          var amount = parseFloat(data[i][2]) || 0;
+
+          // Daily costs
+          if (!dailyCosts[dateKey]) {
+            dailyCosts[dateKey] = 0;
+          }
+          dailyCosts[dateKey] += amount;
+
+          // Category totals
+          if (!categoryTotals[category]) {
+            categoryTotals[category] = 0;
+          }
+          categoryTotals[category] += amount;
+
+          totalCost += amount;
+        }
+      }
+    }
+
+    // Calculate sales
+    for (var i = 1; i < salesData.length; i++) {
+      if (salesData[i][0]) {
+        var salesDate = new Date(salesData[i][1]);
+        if (salesDate >= startDate && salesDate <= endDate) {
+          totalSales += parseFloat(salesData[i][5]) || 0;
+        }
+      }
+    }
+
+    // Convert to arrays
+    var dailyArray = [];
+    for (var key in dailyCosts) {
+      dailyArray.push({
+        date: key,
+        amount: dailyCosts[key]
+      });
+    }
+    dailyArray.sort(function(a, b) {
+      return a.date > b.date ? 1 : -1;
+    });
+
+    var categoryArray = [];
+    for (var key in categoryTotals) {
+      categoryArray.push({
+        category: key,
+        amount: categoryTotals[key],
+        percentage: totalCost > 0 ? (categoryTotals[key] / totalCost * 100).toFixed(2) : 0
+      });
+    }
+
+    return {
+      success: true,
+      data: {
+        totalCost: totalCost,
+        totalSales: totalSales,
+        profit: totalSales - totalCost,
+        dailyCosts: dailyArray,
+        categoryTotals: categoryArray
+      }
+    };
+
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString()
+    };
+  }
+}
+
 // =====================================================
-// ✅ จบไฟล์ Code.gs
+// ✅ จบไฟล์ Code.gs - อัพเดทครบถ้วน 100%
 // =====================================================
