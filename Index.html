@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>☕ ระบบ POS ร้านกาแฟ</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* ===================================
+       CUSTOM STYLES
+       =================================== */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Sarabun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f4f6;
+      overflow-x: hidden;
+    }
+
+    /* ===================================
+       UTILITIES
+       =================================== */
+
+    .hidden {
+      display: none !important;
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding: 20px;
+      padding-bottom: 80px;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ===================================
+       MODAL STYLES
+       =================================== */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 9998;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease-out;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      padding: 20px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      position: sticky;
+      bottom: 0;
+      background: white;
+    }
+
+    /* ===================================
+       NAVIGATION
+       =================================== */
+
+    .top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+
+    .bottom-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px;
+      color: #6b7280;
+      text-decoration: none;
+      font-size: 12px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .bottom-nav-item:hover,
+    .bottom-nav-item.active {
+      color: #10b981;
+      background: #f0fdf4;
+      border-radius: 8px;
+    }
+
+    .bottom-nav-item i {
+      font-size: 20px;
+    }
+
+    /* Desktop Navigation */
+    .desktop-nav {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .bottom-nav {
+        display: none;
+      }
+
+      .desktop-nav {
+        display: flex;
+        gap: 10px;
+      }
+
+      .page {
+        padding-top: 80px;
+        padding-bottom: 20px;
+      }
+    }
+
+    /* ===================================
+       BUTTONS
+       =================================== */
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
+    }
+
+    .btn-info {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-info:hover {
+      background: #2563eb;
+    }
+
+    /* ===================================
+       CARDS
+       =================================== */
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid #10b981;
+    }
+
+    .stat-card.danger {
+      border-left-color: #ef4444;
+    }
+
+    .stat-card.warning {
+      border-left-color: #f59e0b;
+    }
+
+    .stat-card.info {
+      border-left-color: #3b82f6;
+    }
+
+    /* ===================================
+       PRODUCT GRID
+       =================================== */
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    @media (max-width: 640px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .product-card:hover {
+      border-color: #10b981;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+    }
+
+    .product-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #1f2937;
+    }
+
+    .product-card .price {
+      font-size: 16px;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    /* ===================================
+       BADGE
+       =================================== */
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-warning {
+      background: #fed7aa;
+      color: #92400e;
+    }
+
+    .badge-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-orange {
+      background: #fed7aa;
+      color: #9a3412;
+    }
+
+    .badge-blue {
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    /* ===================================
+       TABLES
+       =================================== */
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    thead {
+      background: #f9fafb;
+    }
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 2px solid #e5e7eb;
+      font-size: 14px;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 14px;
+      color: #1f2937;
+    }
+
+    tr:hover {
+      background: #f9fafb;
+    }
+
+    /* ===================================
+       FORMS
+       =================================== */
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    /* ===================================
+       QUEUE SUMMARY BAR
+       =================================== */
+
+    .queue-summary-bar {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    @media (max-width: 640px) {
+      .queue-summary-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+
+    /* ===================================
+       ORDER CARD (Kitchen)
+       =================================== */
+
+    .order-card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #6b7280;
+      margin-bottom: 15px;
+    }
+
+    .order-card.status-pending {
+      border-left-color: #f59e0b;
+    }
+
+    .order-card.status-in-progress {
+      border-left-color: #3b82f6;
+      animation: pulse 2s infinite;
+    }
+
+    .order-card.status-ready {
+      border-left-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      50% {
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+      }
+    }
+
+    /* ===================================
+       LOADING SPINNER
+       =================================== */
+
+    .spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #10b981;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ===================================
+       RESPONSIVE
+       =================================== */
+
+    @media (max-width: 640px) {
+      .modal {
+        max-width: 95vw;
+        max-height: 95vh;
+      }
+
+      .page {
+        padding: 10px;
+        padding-top: 70px;
+        padding-bottom: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================================
+       TOP NAVIGATION
+       =================================== -->
+
+  <div class="top-nav">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-coffee text-2xl text-green-600"></i>
+      <div>
+        <h1 class="text-lg font-bold text-gray-800" id="shopNameDisplay">ระบบ POS</h1>
+        <p class="text-xs text-gray-500" id="shopEmailDisplay"></p>
+      </div>
+    </div>
+
+    <div class="desktop-nav">
+      <button onclick="navigateTo('dashboard')" class="btn btn-secondary">
+        <i class="fas fa-chart-line"></i> Dashboard
+      </button>
+      <button onclick="navigateTo('sales')" class="btn btn-primary">
+        <i class="fas fa-cash-register"></i> POS
+      </button>
+      <button onclick="navigateTo('kitchen')" class="btn btn-warning">
+        <i class="fas fa-utensils"></i> ครัว
+      </button>
+      <button onclick="navigateTo('products')" class="btn btn-info">
+        <i class="fas fa-box"></i> สินค้า
+      </button>
+      <button onclick="navigateTo('settings')" class="btn btn-secondary">
+        <i class="fas fa-cog"></i> ตั้งค่า
+      </button>
+      <button onclick="logout()" class="btn btn-danger">
+        <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
+      </button>
+    </div>
+  </div>
+
+  <!-- ===================================
+       BOTTOM NAVIGATION (Mobile)
+       =================================== -->
+
+  <div class="bottom-nav">
+    <a class="bottom-nav-item active" onclick="navigateTo('dashboard')" data-page="dashboard">
+      <i class="fas fa-chart-line"></i>
+      <span>Dashboard</span>
+    </a>
+    <a class="bottom-nav-item" onclick="navigateTo('sales')" data-page="sales">
+      <i class="fas fa-cash-register"></i>
+      <span>POS</span>
+    </a>
+    <a class="bottom-nav-item" onclick="navigateTo('kitchen')" data-page="kitchen">
+      <i class="fas fa-utensils"></i>
+      <span>ครัว</span>
+    </a>
+    <a class="bottom-nav-item" onclick="navigateTo('products')" data-page="products">
+      <i class="fas fa-box"></i>
+      <span>สินค้า</span>
+    </a>
+    <a class="bottom-nav-item" onclick="navigateTo('settings')" data-page="settings">
+      <i class="fas fa-cog"></i>
+      <span>ตั้งค่า</span>
+    </a>
+  </div>
+
+  <!-- ===================================
+       LOGIN MODAL
+       =================================== -->
+
+  <div class="modal-overlay active" id="loginModal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800">
+          <i class="fas fa-coffee text-green-600"></i>
+          เข้าสู่ระบบ POS
+        </h2>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>
+              <i class="fas fa-envelope"></i>
+              Email
+            </label>
+            <input type="email" class="form-control" id="loginEmail" placeholder="your@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>
+              <i class="fas fa-lock"></i>
+              รหัสผ่าน
+            </label>
+            <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">
+            <i class="fas fa-sign-in-alt"></i>
+            เข้าสู่ระบบ
+          </button>
+        </form>
+        <div class="mt-4 text-center">
+          <button onclick="showSuperAdminLogin()" class="text-sm text-blue-600 hover:underline">
+            <i class="fas fa-crown"></i>
+            Super Admin
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: DASHBOARD
+       =================================== -->
+
+  <div id="page-dashboard" class="page active">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">
+        <i class="fas fa-chart-line text-green-600"></i>
+        Dashboard
+      </h2>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="stat-card">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <p class="text-sm text-gray-600">ยอดขายวันนี้</p>
+              <h3 class="text-2xl font-bold text-gray-800" id="todaySales">0</h3>
+            </div>
+            <div class="bg-green-100 p-3 rounded-full">
+              <i class="fas fa-dollar-sign text-green-600"></i>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500">อัพเดทล่าสุด: <span id="lastUpdate">-</span></p>
+        </div>
+
+        <div class="stat-card warning">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <p class="text-sm text-gray-600">ต้นทุนวันนี้</p>
+              <h3 class="text-2xl font-bold text-gray-800" id="todayCost">0</h3>
+            </div>
+            <div class="bg-orange-100 p-3 rounded-full">
+              <i class="fas fa-coins text-orange-600"></i>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500">รวมทุกรายการ</p>
+        </div>
+
+        <div class="stat-card info">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <p class="text-sm text-gray-600">กำไร/ขาดทุน</p>
+              <h3 class="text-2xl font-bold" id="todayProfit">0</h3>
+            </div>
+            <div class="bg-blue-100 p-3 rounded-full">
+              <i class="fas fa-chart-pie text-blue-600"></i>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500">กำไรสุทธิ</p>
+        </div>
+
+        <div class="stat-card danger">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <p class="text-sm text-gray-600">คิวปัจจุบัน</p>
+              <h3 class="text-2xl font-bold text-gray-800" id="currentQueue">0</h3>
+            </div>
+            <div class="bg-red-100 p-3 rounded-full">
+              <i class="fas fa-clock text-red-600"></i>
+            </div>
+          </div>
+          <p class="text-xs text-gray-500">รายการรอทำ</p>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="card">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-chart-bar text-blue-600"></i>
+            ยอดขาย 7 วันล่าสุด
+          </h3>
+          <canvas id="salesChart" height="200"></canvas>
+        </div>
+
+        <div class="card">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-trophy text-yellow-600"></i>
+            Top 5 สินค้าขายดี
+          </h3>
+          <div id="topProductsList">
+            <p class="text-gray-500 text-center py-8">ไม่มีข้อมูล</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Continue with more pages... This is getting very long. Let me create the complete file in parts. -->
+
+  <script>
+    // ===================================
+    // GLOBAL VARIABLES
+    // ===================================
+
+    let currentUser = null;
+    let currentSheetId = null;
+    let currentPage = 'dashboard';
+    let cart = [];
+    let products = [];
+    let categories = [];
+    let productOptions = [];
+    let materials = [];
+    let settings = {};
+    let lastQueueTimestamp = null;
+
+    // ===================================
+    // INITIALIZATION
+    // ===================================
+
+    document.addEventListener('DOMContentLoaded', function() {
+      checkSession();
+      initializeApp();
+    });
+
+    function checkSession() {
+      const session = localStorage.getItem('posSession');
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          currentUser = data;
+          currentSheetId = data.sheetId;
+
+          document.getElementById('loginModal').classList.remove('active');
+          document.getElementById('shopNameDisplay').textContent = data.shopName;
+          document.getElementById('shopEmailDisplay').textContent = data.email;
+
+          loadInitialData();
+          checkLicenseWarning();
+          startQueuePolling();
+
+        } catch (e) {
+          logout();
+        }
+      }
+    }
+
+    function initializeApp() {
+      // Set current time
+      updateCurrentTime();
+      setInterval(updateCurrentTime, 60000);
+    }
+
+    function updateCurrentTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('th-TH');
+      const elements = document.querySelectorAll('.current-time');
+      elements.forEach(el => el.textContent = timeStr);
+    }
+
+    // ===================================
+    // AUTHENTICATION
+    // ===================================
+
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      showLoading('กำลังเข้าสู่ระบบ...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            currentUser = result;
+            currentSheetId = result.sheetId;
+
+            localStorage.setItem('posSession', JSON.stringify(result));
+
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('shopNameDisplay').textContent = result.shopName;
+            document.getElementById('shopEmailDisplay').textContent = result.email;
+
+            Swal.fire({
+              icon: 'success',
+              title: 'เข้าสู่ระบบสำเร็จ',
+              text: 'ยินดีต้อนรับ ' + result.shopName,
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            loadInitialData();
+            checkLicenseWarning();
+            startQueuePolling();
+
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เข้าสู่ระบบไม่สำเร็จ',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(function(error) {
+          hideLoading();
+          Swal.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด',
+            text: error.message
+          });
+        })
+        .login(email, password);
+    }
+
+    function logout() {
+      localStorage.removeItem('posSession');
+      currentUser = null;
+      currentSheetId = null;
+
+      document.getElementById('loginModal').classList.add('active');
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+
+      Swal.fire({
+        icon: 'success',
+        title: 'ออกจากระบบสำเร็จ',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }
+
+    function checkLicenseWarning() {
+      if (currentUser && currentUser.warning) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'แจ้งเตือน',
+          text: currentUser.warning,
+          confirmButtonText: 'รับทราบ'
+        });
+      }
+    }
+
+    // ===================================
+    // NAVIGATION
+    // ===================================
+
+    function navigateTo(pageName) {
+      // Hide all pages
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
+
+      // Show selected page
+      const targetPage = document.getElementById('page-' + pageName);
+      if (targetPage) {
+        targetPage.classList.add('active');
+        currentPage = pageName;
+      }
+
+      // Update nav active state
+      const navItems = document.querySelectorAll('.bottom-nav-item');
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-page') === pageName) {
+          item.classList.add('active');
+        }
+      });
+
+      // Load page data
+      loadPageData(pageName);
+    }
+
+    function loadPageData(pageName) {
+      switch(pageName) {
+        case 'dashboard':
+          loadDashboardData();
+          break;
+        case 'sales':
+          loadProductsForPOS();
+          loadTodaySalesHistory();
+          break;
+        case 'kitchen':
+          loadKitchenQueue();
+          break;
+        case 'products':
+          loadProductsPage();
+          break;
+        case 'materials':
+          loadMaterialsPage();
+          break;
+        case 'costs':
+          loadCostsPage();
+          break;
+        case 'reports':
+          loadReportsPage();
+          break;
+        case 'history':
+          loadOrderHistory();
+          break;
+        case 'settings':
+          loadSettingsPage();
+          break;
+      }
+    }
+
+    // ===================================
+    // DATA LOADING
+    // ===================================
+
+    function loadInitialData() {
+      loadProducts();
+      loadCategories();
+      loadProductOptions();
+      loadMaterials();
+      loadSettings();
+      loadDashboardData();
+    }
+
+    function loadProducts() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            products = result.data;
+          }
+        })
+        .withFailureHandler(handleError)
+        .getProducts(currentSheetId);
+    }
+
+    function loadCategories() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            categories = result.data;
+          }
+        })
+        .withFailureHandler(handleError)
+        .getCategories(currentSheetId);
+    }
+
+    function loadProductOptions() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            productOptions = result.data;
+          }
+        })
+        .withFailureHandler(handleError)
+        .getProductOptions(currentSheetId);
+    }
+
+    function loadMaterials() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            materials = result.data;
+          }
+        })
+        .withFailureHandler(handleError)
+        .getMaterials(currentSheetId);
+    }
+
+    function loadSettings() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            settings = result.data;
+          }
+        })
+        .withFailureHandler(handleError)
+        .getSettings(currentSheetId);
+    }
+
+    // ===================================
+    // DASHBOARD
+    // ===================================
+
+    function loadDashboardData() {
+      showLoading('กำลังโหลดข้อมูล...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            // Update stats
+            document.getElementById('todaySales').textContent = formatCurrency(result.todaySales);
+            document.getElementById('todayCost').textContent = formatCurrency(result.todayCost);
+
+            const profitElement = document.getElementById('todayProfit');
+            profitElement.textContent = formatCurrency(result.todayProfit);
+            profitElement.className = result.todayProfit >= 0 ? 'text-2xl font-bold text-green-600' : 'text-2xl font-bold text-red-600';
+
+            // Update last update time
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('th-TH');
+
+            // Render top products
+            renderTopProducts(result.topProducts);
+
+            // Render chart (if chart library loaded)
+            renderSalesChart(result.last7Days);
+          }
+        })
+        .withFailureHandler(function(error) {
+          hideLoading();
+          handleError(error);
+        })
+        .getDashboardData(currentSheetId);
+    }
+
+    function renderTopProducts(topProducts) {
+      const container = document.getElementById('topProductsList');
+
+      if (!topProducts || topProducts.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center py-8">ไม่มีข้อมูล</p>';
+        return;
+      }
+
+      let html = '<div class="space-y-3">';
+      topProducts.forEach((product, index) => {
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+        html += `
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl">${medal}</span>
+              <div>
+                <p class="font-semibold text-gray-800">${product.name}</p>
+                <p class="text-sm text-gray-500">${product.count} แก้ว</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="badge badge-success">${product.count} ขาย</span>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+    }
+
+    function renderSalesChart(data) {
+      // Simple text-based chart for now
+      // You can integrate Chart.js or similar library later
+      console.log('Sales Chart Data:', data);
+    }
+
+    // ===================================
+    // HELPER FUNCTIONS
+    // ===================================
+
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('th-TH', {
+        style: 'currency',
+        currency: 'THB',
+        minimumFractionDigits: 0
+      }).format(amount || 0);
+    }
+
+    function showLoading(message = 'กำลังโหลด...') {
+      Swal.fire({
+        title: message,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+    }
+
+    function hideLoading() {
+      Swal.close();
+    }
+
+    function handleError(error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เกิดข้อผิดพลาด',
+        text: error.message || 'กรุณาลองใหม่อีกครั้ง'
+      });
+    }
+
+    function showToast(message, icon = 'success') {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+
+      Toast.fire({
+        icon: icon,
+        title: message
+      });
+    }
+
+    // ===================================
+    // QUEUE POLLING (Real-time Update)
+    // ===================================
+
+    function startQueuePolling() {
+      setInterval(checkQueueUpdate, 10000); // Every 10 seconds
+    }
+
+    function checkQueueUpdate() {
+      if (!currentSheetId) return;
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success && result.lastQueueUpdate !== lastQueueTimestamp) {
+            lastQueueTimestamp = result.lastQueueUpdate;
+
+            // Reload queue-related data
+            if (currentPage === 'kitchen') {
+              loadKitchenQueue();
+            }
+            if (currentPage === 'sales') {
+              loadTodaySalesHistory();
+            }
+
+            // Update queue count
+            loadQueueStats();
+          }
+        })
+        .withFailureHandler(function() {
+          // Silently fail
+        })
+        .getSystemTimestamp(currentSheetId);
+    }
+
+    function loadQueueStats() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            const total = result.data.pending + result.data.inProgress;
+            document.getElementById('currentQueue').textContent = total;
+          }
+        })
+        .withFailureHandler(function() {})
+        .getQueueStats(currentSheetId);
+    }
+
+    // Placeholder functions for pages (will implement in next part)
+    function loadProductsForPOS() { console.log('Load POS'); }
+    function loadTodaySalesHistory() { console.log('Load Sales History'); }
+    function loadKitchenQueue() { console.log('Load Kitchen Queue'); }
+    function loadProductsPage() { console.log('Load Products Page'); }
+    function loadMaterialsPage() { console.log('Load Materials Page'); }
+    function loadCostsPage() { console.log('Load Costs Page'); }
+    function loadReportsPage() { console.log('Load Reports Page'); }
+    function loadOrderHistory() { console.log('Load Order History'); }
+    function loadSettingsPage() { console.log('Load Settings Page'); }
+    function showSuperAdminLogin() { console.log('Super Admin Login'); }
+
+  </script>
+</body>
+</html>
