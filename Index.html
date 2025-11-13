@@ -765,7 +765,1105 @@
     </div>
   </div>
 
-  <!-- Continue with more pages... This is getting very long. Let me create the complete file in parts. -->
+  <!-- ===================================
+       PAGE: POS (SALES)
+       =================================== -->
+
+  <div id="page-sales" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        <!-- Left: Product Grid (2 columns on large screens) -->
+        <div class="lg:col-span-2">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">
+            <i class="fas fa-cash-register text-green-600"></i>
+            เลือกสินค้า
+          </h2>
+
+          <!-- Category Filter -->
+          <div class="mb-4 flex gap-2 overflow-x-auto pb-2">
+            <button onclick="filterPOSCategory('all')" class="btn btn-primary category-filter-btn active" data-category="all">
+              <i class="fas fa-th"></i> ทั้งหมด
+            </button>
+            <div id="categoryFilterButtons"></div>
+          </div>
+
+          <!-- Product Grid -->
+          <div class="product-grid" id="posProductGrid">
+            <div class="spinner"></div>
+          </div>
+        </div>
+
+        <!-- Right: Cart -->
+        <div class="lg:col-span-1">
+          <div class="card sticky top-20">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">
+              <i class="fas fa-shopping-cart text-blue-600"></i>
+              รายการสั่งซื้อ
+            </h3>
+
+            <!-- Cart Items -->
+            <div id="cartItemsList" class="mb-4 max-h-96 overflow-y-auto">
+              <p class="text-gray-400 text-center py-8">ไม่มีสินค้าในตะกร้า</p>
+            </div>
+
+            <!-- Total -->
+            <div class="border-t pt-4">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-600">รวมทั้งหมด:</span>
+                <span class="text-2xl font-bold text-green-600" id="cartTotal">฿0</span>
+              </div>
+              <div class="flex justify-between items-center mb-4 text-sm">
+                <span class="text-gray-500">จำนวนรายการ:</span>
+                <span class="text-gray-600" id="cartItemCount">0 รายการ</span>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="clearCart()" class="btn btn-secondary w-full">
+                  <i class="fas fa-trash"></i> ล้าง
+                </button>
+                <button onclick="showPaymentModal()" class="btn btn-primary w-full" id="checkoutBtn" disabled>
+                  <i class="fas fa-credit-card"></i> ชำระเงิน
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Sales History -->
+      <div class="mt-8">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">
+          <i class="fas fa-history text-orange-600"></i>
+          รายการขายวันนี้
+        </h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>เลขที่</th>
+                <th>เวลา</th>
+                <th>รายการ</th>
+                <th>ยอดรวม</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="todaySalesTable">
+              <tr>
+                <td colspan="6" class="text-center text-gray-500 py-8">ไม่มีรายการขาย</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: KITCHEN QUEUE
+       =================================== -->
+
+  <div id="page-kitchen" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <i class="fas fa-utensils text-orange-600"></i>
+        คิวครัว
+      </h2>
+
+      <!-- Queue Summary -->
+      <div class="queue-summary-bar">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-clock text-3xl"></i>
+          <div>
+            <p class="text-sm opacity-90">คิวทั้งหมด</p>
+            <h3 class="text-2xl font-bold" id="queueTotal">0</h3>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p class="text-sm opacity-90">รอทำ</p>
+            <h4 class="text-xl font-bold" id="queuePending">0</h4>
+          </div>
+          <div>
+            <p class="text-sm opacity-90">กำลังทำ</p>
+            <h4 class="text-xl font-bold" id="queueInProgress">0</h4>
+          </div>
+          <div>
+            <p class="text-sm opacity-90">พร้อมเสิร์ฟ</p>
+            <h4 class="text-xl font-bold" id="queueReady">0</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Queue Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="kitchenQueueContainer">
+        <p class="text-gray-500 text-center py-8 col-span-full">ไม่มีคิว</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: ORDER HISTORY
+       =================================== -->
+
+  <div id="page-history" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <i class="fas fa-history text-blue-600"></i>
+        ประวัติการขาย
+      </h2>
+
+      <!-- Filters -->
+      <div class="card mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="form-group">
+            <label>วันที่เริ่มต้น</label>
+            <input type="date" id="historyStartDate" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>วันที่สิ้นสุด</label>
+            <input type="date" id="historyEndDate" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>สถานะ</label>
+            <select id="historyStatus" class="form-control">
+              <option value="all">ทั้งหมด</option>
+              <option value="รอทำ">รอทำ</option>
+              <option value="กำลังทำ">กำลังทำ</option>
+              <option value="พร้อมเสิร์ฟ">พร้อมเสิร์ฟ</option>
+              <option value="เสร็จสิ้น">เสร็จสิ้น</option>
+            </select>
+          </div>
+          <div class="form-group flex items-end">
+            <button onclick="loadOrderHistory()" class="btn btn-primary w-full">
+              <i class="fas fa-search"></i> ค้นหา
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>เลขที่</th>
+              <th>วันที่-เวลา</th>
+              <th>รายการ</th>
+              <th>ยอดรวม</th>
+              <th>การชำระเงิน</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <tr>
+              <td colspan="7" class="text-center text-gray-500 py-8">กรุณาเลือกช่วงวันที่</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: PRODUCTS
+       =================================== -->
+
+  <div id="page-products" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <i class="fas fa-box text-blue-600"></i>
+        จัดการสินค้า
+      </h2>
+
+      <!-- Tabs -->
+      <div class="mb-6 border-b border-gray-200">
+        <div class="flex gap-4 overflow-x-auto">
+          <button onclick="switchProductTab('products')" class="product-tab-btn px-6 py-3 font-semibold border-b-2 border-green-600 text-green-600" data-tab="products">
+            <i class="fas fa-coffee"></i> สินค้า
+          </button>
+          <button onclick="switchProductTab('categories')" class="product-tab-btn px-6 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="categories">
+            <i class="fas fa-tags"></i> หมวดหมู่
+          </button>
+          <button onclick="switchProductTab('options')" class="product-tab-btn px-6 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="options">
+            <i class="fas fa-sliders-h"></i> ตัวเลือก
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: Products -->
+      <div id="tab-products" class="product-tab active">
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex gap-2">
+            <input type="text" id="searchProduct" placeholder="ค้นหาสินค้า..." class="form-control" style="max-width: 300px;">
+          </div>
+          <button onclick="showAddProductModal()" class="btn btn-primary">
+            <i class="fas fa-plus"></i> เพิ่มสินค้า
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>รูปภาพ</th>
+                <th>ชื่อสินค้า</th>
+                <th>หมวดหมู่</th>
+                <th>ราคา</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody">
+              <tr>
+                <td colspan="6" class="text-center"><div class="spinner"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Categories -->
+      <div id="tab-categories" class="product-tab hidden">
+        <div class="flex justify-end mb-4">
+          <button onclick="showAddCategoryModal()" class="btn btn-primary">
+            <i class="fas fa-plus"></i> เพิ่มหมวดหมู่
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="categoriesGrid">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- Tab: Options -->
+      <div id="tab-options" class="product-tab hidden">
+        <div class="flex justify-end mb-4">
+          <button onclick="showAddOptionGroupModal()" class="btn btn-primary">
+            <i class="fas fa-plus"></i> เพิ่มกลุ่มตัวเลือก
+          </button>
+        </div>
+
+        <div id="optionGroupsContainer">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: MATERIALS
+       =================================== -->
+
+  <div id="page-materials" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <i class="fas fa-warehouse text-purple-600"></i>
+        จัดการวัตถุดิบ
+      </h2>
+
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex gap-2">
+          <input type="text" id="searchMaterial" placeholder="ค้นหาวัตถุดิบ..." class="form-control" style="max-width: 300px;">
+        </div>
+        <button onclick="showAddMaterialModal()" class="btn btn-primary">
+          <i class="fas fa-plus"></i> เพิ่มวัตถุดิบ
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ชื่อวัตถุดิบ</th>
+              <th>หน่วย</th>
+              <th>ราคาต่อหน่วย</th>
+              <th>สต็อกคงเหลือ</th>
+              <th>จุดสั่งซื้อ</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="materialsTableBody">
+            <tr>
+              <td colspan="7" class="text-center"><div class="spinner"></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: COSTS
+       =================================== -->
+
+  <div id="page-costs" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <i class="fas fa-coins text-yellow-600"></i>
+        จัดการต้นทุน
+      </h2>
+
+      <!-- Tabs -->
+      <div class="mb-6 border-b border-gray-200">
+        <div class="flex gap-4">
+          <button onclick="switchCostTab('daily')" class="cost-tab-btn px-6 py-3 font-semibold border-b-2 border-green-600 text-green-600" data-tab="daily">
+            <i class="fas fa-calendar-day"></i> รายวัน
+          </button>
+          <button onclick="switchCostTab('monthly')" class="cost-tab-btn px-6 py-3 font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="monthly">
+            <i class="fas fa-calendar-alt"></i> รายเดือน
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab: Daily Costs -->
+      <div id="tab-daily" class="cost-tab active">
+        <div class="flex justify-between items-center mb-4">
+          <div class="form-group mb-0">
+            <input type="date" id="dailyCostDate" class="form-control">
+          </div>
+          <button onclick="showAddDailyCostModal()" class="btn btn-primary">
+            <i class="fas fa-plus"></i> เพิ่มรายจ่าย
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+          <div class="stat-card">
+            <p class="text-sm text-gray-600">รวมรายจ่าย</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="dailyTotalCost">฿0</h3>
+          </div>
+          <div class="stat-card warning">
+            <p class="text-sm text-gray-600">ต้นทุนสินค้า</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="dailyProductCost">฿0</h3>
+          </div>
+          <div class="stat-card info">
+            <p class="text-sm text-gray-600">ค่าใช้จ่ายอื่น</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="dailyOtherCost">฿0</h3>
+          </div>
+          <div class="stat-card danger">
+            <p class="text-sm text-gray-600">ยอดขายวันนี้</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="dailySales">฿0</h3>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ประเภท</th>
+                <th>รายละเอียด</th>
+                <th>จำนวนเงิน</th>
+                <th>หมายเหตุ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="dailyCostsTableBody">
+              <tr>
+                <td colspan="5" class="text-center text-gray-500 py-8">ไม่มีรายจ่าย</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Monthly Costs -->
+      <div id="tab-monthly" class="cost-tab hidden">
+        <div class="flex justify-between items-center mb-4">
+          <div class="grid grid-cols-2 gap-2">
+            <select id="monthlyCostMonth" class="form-control">
+              <option value="1">มกราคม</option>
+              <option value="2">กุมภาพันธ์</option>
+              <option value="3">มีนาคม</option>
+              <option value="4">เมษายน</option>
+              <option value="5">พฤษภาคม</option>
+              <option value="6">มิถุนายน</option>
+              <option value="7">กรกฎาคม</option>
+              <option value="8">สิงหาคม</option>
+              <option value="9">กันยายน</option>
+              <option value="10">ตุลาคม</option>
+              <option value="11">พฤศจิกายน</option>
+              <option value="12">ธันวาคม</option>
+            </select>
+            <select id="monthlyCostYear" class="form-control"></select>
+          </div>
+          <button onclick="loadMonthlyCosts()" class="btn btn-primary">
+            <i class="fas fa-search"></i> ค้นหา
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <div class="stat-card">
+            <p class="text-sm text-gray-600">รวมรายจ่าย</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="monthlyTotalCost">฿0</h3>
+          </div>
+          <div class="stat-card info">
+            <p class="text-sm text-gray-600">ยอดขาย</p>
+            <h3 class="text-2xl font-bold text-gray-800" id="monthlySales">฿0</h3>
+          </div>
+          <div class="stat-card">
+            <p class="text-sm text-gray-600">กำไร/ขาดทุน</p>
+            <h3 class="text-2xl font-bold" id="monthlyProfit">฿0</h3>
+          </div>
+        </div>
+
+        <canvas id="monthlyCostChart" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: REPORTS
+       =================================== -->
+
+  <div id="page-reports" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">
+        <i class="fas fa-chart-bar text-indigo-600"></i>
+        รายงาน
+      </h2>
+
+      <!-- Report Type Selector -->
+      <div class="card mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button onclick="showSalesReport()" class="p-6 border-2 border-green-600 rounded-lg hover:bg-green-50 text-left">
+            <i class="fas fa-chart-line text-3xl text-green-600 mb-2"></i>
+            <h3 class="text-lg font-bold text-gray-800">รายงานยอดขาย</h3>
+            <p class="text-sm text-gray-600">วิเคราะห์ยอดขายแยกตามช่วงเวลา</p>
+          </button>
+          <button onclick="showProfitLossReport()" class="p-6 border-2 border-blue-600 rounded-lg hover:bg-blue-50 text-left">
+            <i class="fas fa-balance-scale text-3xl text-blue-600 mb-2"></i>
+            <h3 class="text-lg font-bold text-gray-800">กำไร-ขาดทุน</h3>
+            <p class="text-sm text-gray-600">สรุปกำไรขาดทุนประจำเดือน</p>
+          </button>
+          <button onclick="showBestSellersReport()" class="p-6 border-2 border-orange-600 rounded-lg hover:bg-orange-50 text-left">
+            <i class="fas fa-trophy text-3xl text-orange-600 mb-2"></i>
+            <h3 class="text-lg font-bold text-gray-800">สินค้าขายดี</h3>
+            <p class="text-sm text-gray-600">วิเคราะห์สินค้าที่ขายดีที่สุด</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- Report Content -->
+      <div id="reportContent">
+        <div class="text-center text-gray-500 py-20">
+          <i class="fas fa-chart-bar text-6xl mb-4 opacity-30"></i>
+          <p>เลือกประเภทรายงานด้านบน</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: SETTINGS
+       =================================== -->
+
+  <div id="page-settings" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">
+        <i class="fas fa-cog text-gray-600"></i>
+        ตั้งค่าระบบ
+      </h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Shop Info -->
+        <div class="card">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-store text-green-600"></i>
+            ข้อมูลร้าน
+          </h3>
+          <form id="shopInfoForm" onsubmit="saveShopInfo(event)">
+            <div class="form-group">
+              <label>ชื่อร้าน</label>
+              <input type="text" id="settingShopName" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>ที่อยู่</label>
+              <textarea id="settingShopAddress" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>เบอร์โทร</label>
+              <input type="tel" id="settingShopPhone" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> บันทึก
+            </button>
+          </form>
+        </div>
+
+        <!-- PromptPay Settings -->
+        <div class="card">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-qrcode text-blue-600"></i>
+            PromptPay QR Code
+          </h3>
+          <form id="promptpayForm" onsubmit="savePromptPaySettings(event)">
+            <div class="form-group">
+              <label>เลขพร้อมเพย์ (เบอร์โทรหรือเลขบัตรประชาชน)</label>
+              <input type="text" id="settingPromptPay" class="form-control" placeholder="0812345678">
+            </div>
+            <div class="form-group">
+              <label>ชื่อบัญชี</label>
+              <input type="text" id="settingPromptPayName" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> บันทึก
+            </button>
+          </form>
+        </div>
+
+        <!-- Order Settings -->
+        <div class="card">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-receipt text-purple-600"></i>
+            การตั้งค่าออเดอร์
+          </h3>
+          <form id="orderSettingsForm" onsubmit="saveOrderSettings(event)">
+            <div class="form-group">
+              <label>รูปแบบเลขที่ออเดอร์</label>
+              <select id="settingOrderFormat" class="form-control">
+                <option value="auto">อัตโนมัติ (เลขรันต่อเนื่อง)</option>
+                <option value="manual">กรอกเอง</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>คำนำหน้าเลขที่</label>
+              <input type="text" id="settingOrderPrefix" class="form-control" placeholder="ORDER-">
+            </div>
+            <div class="form-group">
+              <label>ช่องทางการสั่งซื้อ</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" id="channelWalkin" checked>
+                  <span>Walk-in (ร้าน)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" id="channelOnline">
+                  <span>Online</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" id="channelDelivery">
+                  <span>Delivery</span>
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> บันทึก
+            </button>
+          </form>
+        </div>
+
+        <!-- License Info -->
+        <div class="card">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-key text-yellow-600"></i>
+            ข้อมูลใบอนุญาต
+          </h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">ประเภท:</span>
+              <span class="font-semibold" id="licenseType">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">วันหมดอายุ:</span>
+              <span class="font-semibold" id="licenseExpiry">-</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-600">สถานะ:</span>
+              <span class="badge" id="licenseStatus">-</span>
+            </div>
+            <div class="pt-4 border-t">
+              <button onclick="contactRenewLicense()" class="btn btn-warning w-full">
+                <i class="fas fa-refresh"></i> ต่ออายุใบอนุญาต
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="card lg:col-span-2">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <i class="fas fa-lock text-red-600"></i>
+            เปลี่ยนรหัสผ่าน
+          </h3>
+          <form id="changePasswordForm" onsubmit="changePassword(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="form-group">
+              <label>รหัสผ่านเดิม</label>
+              <input type="password" id="oldPassword" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>รหัสผ่านใหม่</label>
+              <input type="password" id="newPassword" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>ยืนยันรหัสผ่านใหม่</label>
+              <input type="password" id="confirmPassword" class="form-control" required>
+            </div>
+            <div class="md:col-span-3">
+              <button type="submit" class="btn btn-danger">
+                <i class="fas fa-key"></i> เปลี่ยนรหัสผ่าน
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       PAGE: SUPER ADMIN
+       =================================== -->
+
+  <div id="page-superadmin" class="page">
+    <div class="container mx-auto" style="padding-top: 70px;">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">
+        <i class="fas fa-crown text-yellow-600"></i>
+        Super Admin Dashboard
+      </h2>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="stat-card">
+          <p class="text-sm text-gray-600">ร้านค้าทั้งหมด</p>
+          <h3 class="text-2xl font-bold text-gray-800" id="totalShops">0</h3>
+        </div>
+        <div class="stat-card info">
+          <p class="text-sm text-gray-600">ใช้งานปกติ</p>
+          <h3 class="text-2xl font-bold text-gray-800" id="activeShops">0</h3>
+        </div>
+        <div class="stat-card warning">
+          <p class="text-sm text-gray-600">ใกล้หมดอายุ</p>
+          <h3 class="text-2xl font-bold text-gray-800" id="expiringShops">0</h3>
+        </div>
+        <div class="stat-card danger">
+          <p class="text-sm text-gray-600">หมดอายุแล้ว</p>
+          <h3 class="text-2xl font-bold text-gray-800" id="expiredShops">0</h3>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-between items-center mb-6">
+        <input type="text" id="searchShop" placeholder="ค้นหาร้านค้า..." class="form-control" style="max-width: 300px;">
+        <button onclick="showCreateShopModal()" class="btn btn-primary">
+          <i class="fas fa-plus"></i> สร้างร้านใหม่
+        </button>
+      </div>
+
+      <!-- Shops Table -->
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ชื่อร้าน</th>
+              <th>Email</th>
+              <th>ประเภทใบอนุญาต</th>
+              <th>วันหมดอายุ</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="shopsTableBody">
+            <tr>
+              <td colspan="6" class="text-center"><div class="spinner"></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================
+       MODALS
+       =================================== -->
+
+  <!-- Product Options Modal -->
+  <div class="modal-overlay" id="productOptionsModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800" id="selectedProductName">เลือกตัวเลือก</h2>
+        <button onclick="closeProductOptionsModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="selectedProductId">
+
+        <div id="productOptionsContainer">
+          <!-- Options will be dynamically loaded -->
+        </div>
+
+        <!-- Price Preview -->
+        <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-700 font-semibold">ราคารวม:</span>
+            <span class="text-2xl font-bold text-green-600" id="optionsPrice">฿0</span>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="mt-4">
+          <label class="block mb-2 font-semibold">จำนวน:</label>
+          <div class="flex items-center gap-4">
+            <button onclick="decreaseQuantity()" class="btn btn-secondary">
+              <i class="fas fa-minus"></i>
+            </button>
+            <input type="number" id="optionsQuantity" value="1" min="1" class="form-control text-center" style="max-width: 100px;">
+            <button onclick="increaseQuantity()" class="btn btn-secondary">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Note -->
+        <div class="mt-4">
+          <label class="block mb-2 font-semibold">หมายเหตุ:</label>
+          <textarea id="optionsNote" class="form-control" rows="2" placeholder="เช่น น้ำตาลน้อย, ไม่ใส่วิปครีม..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeProductOptionsModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="confirmAddToCart()" class="btn btn-primary">
+          <i class="fas fa-cart-plus"></i> เพิ่มลงตะกร้า
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800">ชำระเงิน</h2>
+        <button onclick="closePaymentModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Order Summary -->
+        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-600">รายการทั้งหมด:</span>
+            <span class="font-semibold" id="paymentItemCount">0 รายการ</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">ยอดรวม:</span>
+            <span class="text-2xl font-bold text-green-600" id="paymentTotal">฿0</span>
+          </div>
+        </div>
+
+        <!-- Order Number -->
+        <div class="form-group">
+          <label>เลขที่ออเดอร์</label>
+          <input type="text" id="paymentOrderNumber" class="form-control" placeholder="อัตโนมัติ">
+        </div>
+
+        <!-- Channel -->
+        <div class="form-group">
+          <label>ช่องทาง</label>
+          <select id="paymentChannel" class="form-control">
+            <option value="Walk-in">Walk-in (ร้าน)</option>
+            <option value="Online">Online</option>
+            <option value="Delivery">Delivery</option>
+          </select>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="form-group">
+          <label class="font-semibold text-lg mb-3 block">วิธีการชำระเงิน</label>
+          <div id="paymentMethodsContainer">
+            <div class="payment-method-item mb-4 p-4 border border-gray-200 rounded-lg">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-sm mb-1">ประเภท</label>
+                  <select class="form-control payment-type" onchange="handlePaymentTypeChange(this)">
+                    <option value="เงินสด">เงินสด</option>
+                    <option value="โอน">โอน</option>
+                    <option value="QR Code">QR Code</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm mb-1">จำนวนเงิน</label>
+                  <input type="number" class="form-control payment-amount" placeholder="0" step="0.01">
+                </div>
+              </div>
+              <div class="qr-container hidden mt-3">
+                <div class="text-center">
+                  <img id="qrCodeImage" src="" alt="QR Code" class="mx-auto mb-2" style="max-width: 250px;">
+                  <p class="text-sm text-gray-600">สแกนเพื่อชำระเงิน</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button onclick="addPaymentMethod()" class="btn btn-secondary btn-sm">
+            <i class="fas fa-plus"></i> เพิ่มวิธีชำระเงิน
+          </button>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="form-group">
+          <label>ชื่อลูกค้า (ถ้ามี)</label>
+          <input type="text" id="paymentCustomerName" class="form-control" placeholder="ชื่อลูกค้า">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closePaymentModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="confirmPayment()" class="btn btn-primary">
+          <i class="fas fa-check"></i> ยืนยันการขาย
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Detail Modal -->
+  <div class="modal-overlay" id="orderDetailModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800">
+          รายละเอียดออเดอร์ #<span id="detailOrderNumber"></span>
+        </h2>
+        <button onclick="closeOrderDetailModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="orderDetailContent">
+          <div class="spinner"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeOrderDetailModal()" class="btn btn-secondary">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Product Modal -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800" id="productModalTitle">เพิ่มสินค้า</h2>
+        <button onclick="closeProductModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="productForm" onsubmit="saveProduct(event)">
+          <input type="hidden" id="productId">
+
+          <div class="form-group">
+            <label>ชื่อสินค้า *</label>
+            <input type="text" id="productName" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>หมวดหมู่ *</label>
+            <select id="productCategory" class="form-control" required>
+              <option value="">เลือกหมวดหมู่</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>ราคา *</label>
+            <input type="number" id="productPrice" class="form-control" step="0.01" required>
+          </div>
+
+          <div class="form-group">
+            <label>รูปภาพ URL</label>
+            <input type="url" id="productImage" class="form-control" placeholder="https://...">
+          </div>
+
+          <div class="form-group">
+            <label>คำอธิบาย</label>
+            <textarea id="productDescription" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" id="productActive" checked>
+              <span>เปิดใช้งาน</span>
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeProductModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="document.getElementById('productForm').requestSubmit()" class="btn btn-primary">
+          <i class="fas fa-save"></i> บันทึก
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Category Modal -->
+  <div class="modal-overlay" id="categoryModal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800" id="categoryModalTitle">เพิ่มหมวดหมู่</h2>
+        <button onclick="closeCategoryModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="categoryForm" onsubmit="saveCategory(event)">
+          <input type="hidden" id="categoryId">
+
+          <div class="form-group">
+            <label>ชื่อหมวดหมู่ *</label>
+            <input type="text" id="categoryName" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>สี</label>
+            <input type="color" id="categoryColor" class="form-control" value="#10b981">
+          </div>
+
+          <div class="form-group">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" id="categoryActive" checked>
+              <span>เปิดใช้งาน</span>
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeCategoryModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="document.getElementById('categoryForm').requestSubmit()" class="btn btn-primary">
+          <i class="fas fa-save"></i> บันทึก
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Material Modal -->
+  <div class="modal-overlay" id="materialModal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800" id="materialModalTitle">เพิ่มวัตถุดิบ</h2>
+        <button onclick="closeMaterialModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="materialForm" onsubmit="saveMaterial(event)">
+          <input type="hidden" id="materialId">
+
+          <div class="form-group">
+            <label>ชื่อวัตถุดิบ *</label>
+            <input type="text" id="materialName" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>หน่วย *</label>
+            <input type="text" id="materialUnit" class="form-control" placeholder="กิโลกรัม, ลิตร, ถุง..." required>
+          </div>
+
+          <div class="form-group">
+            <label>ราคาต่อหน่วย *</label>
+            <input type="number" id="materialPrice" class="form-control" step="0.01" required>
+          </div>
+
+          <div class="form-group">
+            <label>สต็อกคงเหลือ</label>
+            <input type="number" id="materialStock" class="form-control" step="0.01" value="0">
+          </div>
+
+          <div class="form-group">
+            <label>จุดสั่งซื้อ</label>
+            <input type="number" id="materialReorderPoint" class="form-control" step="0.01" value="0">
+            <small class="text-gray-500">แจ้งเตือนเมื่อสต็อกต่ำกว่าจำนวนนี้</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeMaterialModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="document.getElementById('materialForm').requestSubmit()" class="btn btn-primary">
+          <i class="fas fa-save"></i> บันทึก
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Super Admin Login Modal -->
+  <div class="modal-overlay" id="superAdminLoginModal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800">
+          <i class="fas fa-crown text-yellow-600"></i>
+          Super Admin Login
+        </h2>
+        <button onclick="closeSuperAdminLogin()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="superAdminLoginForm" onsubmit="handleSuperAdminLogin(event)">
+          <div class="form-group">
+            <label>Master Password</label>
+            <input type="password" id="superAdminPassword" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-full">
+            <i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Shop Modal -->
+  <div class="modal-overlay" id="createShopModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-gray-800">สร้างร้านใหม่</h2>
+        <button onclick="closeCreateShopModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="createShopForm" onsubmit="createShop(event)">
+          <div class="form-group">
+            <label>ชื่อร้าน *</label>
+            <input type="text" id="newShopName" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="newShopEmail" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>รหัสผ่าน *</label>
+            <input type="password" id="newShopPassword" class="form-control" required minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label>ประเภทใบอนุญาต *</label>
+            <select id="newShopLicenseType" class="form-control" required>
+              <option value="monthly">รายเดือน (199 บาท)</option>
+              <option value="yearly">รายปี (1,399 บาท)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>ที่อยู่</label>
+            <textarea id="newShopAddress" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>เบอร์โทร</label>
+            <input type="tel" id="newShopPhone" class="form-control">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeCreateShopModal()" class="btn btn-secondary">ยกเลิก</button>
+        <button onclick="document.getElementById('createShopForm').requestSubmit()" class="btn btn-primary">
+          <i class="fas fa-plus"></i> สร้างร้าน
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // ===================================
@@ -1211,17 +2309,1555 @@
         .getQueueStats(currentSheetId);
     }
 
-    // Placeholder functions for pages (will implement in next part)
-    function loadProductsForPOS() { console.log('Load POS'); }
-    function loadTodaySalesHistory() { console.log('Load Sales History'); }
-    function loadKitchenQueue() { console.log('Load Kitchen Queue'); }
-    function loadProductsPage() { console.log('Load Products Page'); }
-    function loadMaterialsPage() { console.log('Load Materials Page'); }
-    function loadCostsPage() { console.log('Load Costs Page'); }
-    function loadReportsPage() { console.log('Load Reports Page'); }
-    function loadOrderHistory() { console.log('Load Order History'); }
-    function loadSettingsPage() { console.log('Load Settings Page'); }
-    function showSuperAdminLogin() { console.log('Super Admin Login'); }
+    // ===================================
+    // POS (SALES) FUNCTIONS
+    // ===================================
+
+    function loadProductsForPOS() {
+      const grid = document.getElementById('posProductGrid');
+      const filterButtons = document.getElementById('categoryFilterButtons');
+
+      if (!products || products.length === 0) {
+        grid.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">ไม่มีสินค้า</p>';
+        return;
+      }
+
+      // Render category filter buttons
+      let categoryHTML = '';
+      categories.forEach(cat => {
+        if (cat.สถานะ === 'เปิดใช้งาน') {
+          categoryHTML += `
+            <button onclick="filterPOSCategory('${cat.id}')" class="btn btn-secondary category-filter-btn" data-category="${cat.id}">
+              ${cat.ชื่อหมวดหมู่}
+            </button>
+          `;
+        }
+      });
+      filterButtons.innerHTML = categoryHTML;
+
+      // Render products
+      renderPOSProducts();
+    }
+
+    function renderPOSProducts(categoryFilter = 'all') {
+      const grid = document.getElementById('posProductGrid');
+      let filtered = products.filter(p => p.สถานะ === 'เปิดใช้งาน');
+
+      if (categoryFilter !== 'all') {
+        filtered = filtered.filter(p => p.หมวดหมู่ === categoryFilter);
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">ไม่มีสินค้าในหมวดหมู่นี้</p>';
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(product => {
+        html += `
+          <div class="product-card" onclick="selectProduct('${product.id}')">
+            ${product.รูปภาพ ? `<img src="${product.รูปภาพ}" alt="${product.ชื่อสินค้า}">` : '<div style="width:80px;height:80px;background:#f3f4f6;border-radius:8px;margin-bottom:10px;"></div>'}
+            <h3>${product.ชื่อสินค้า}</h3>
+            <div class="price">฿${product.ราคา}</div>
+          </div>
+        `;
+      });
+      grid.innerHTML = html;
+    }
+
+    function filterPOSCategory(categoryId) {
+      // Update active button
+      document.querySelectorAll('.category-filter-btn').forEach(btn => {
+        btn.classList.remove('active', 'btn-primary');
+        btn.classList.add('btn-secondary');
+      });
+      event.target.classList.add('active', 'btn-primary');
+      event.target.classList.remove('btn-secondary');
+
+      renderPOSProducts(categoryId);
+    }
+
+    function selectProduct(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      // Check if product has options
+      const hasOptions = productOptions.some(opt => opt.สถานะ === 'เปิดใช้งาน');
+
+      if (hasOptions) {
+        showProductOptionsModal(product);
+      } else {
+        // Add directly to cart with default options
+        addToCart({
+          productId: product.id,
+          productName: product.ชื่อสินค้า,
+          price: product.ราคา,
+          quantity: 1,
+          options: {},
+          note: ''
+        });
+      }
+    }
+
+    function showProductOptionsModal(product) {
+      document.getElementById('selectedProductId').value = product.id;
+      document.getElementById('selectedProductName').textContent = product.ชื่อสินค้า;
+      document.getElementById('optionsQuantity').value = 1;
+      document.getElementById('optionsNote').value = '';
+
+      // Load product options
+      const container = document.getElementById('productOptionsContainer');
+      let html = '';
+
+      // Group options by group name
+      const groups = {};
+      productOptions.forEach(opt => {
+        if (opt.สถานะ === 'เปิดใช้งาน') {
+          if (!groups[opt.กลุ่ม]) {
+            groups[opt.กลุ่ม] = [];
+          }
+          groups[opt.กลุ่ม].push(opt);
+        }
+      });
+
+      // Render each group
+      Object.keys(groups).forEach(groupName => {
+        html += `
+          <div class="mb-4">
+            <label class="block font-semibold mb-2">${groupName}:</label>
+            <div class="space-y-2">
+        `;
+
+        groups[groupName].forEach(opt => {
+          const priceText = opt.ปรับราคา > 0 ? ` (+฿${opt.ปรับราคา})` : opt.ปรับราคา < 0 ? ` (฿${opt.ปรับราคา})` : '';
+          html += `
+            <label class="flex items-center gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer">
+              <input type="radio" name="option-${groupName}" value="${opt.id}" data-price="${opt.ปรับราคา}" onchange="updateOptionsPrice()">
+              <span>${opt.ชื่อตัวเลือก}${priceText}</span>
+            </label>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      // Calculate initial price
+      document.getElementById('optionsPrice').textContent = formatCurrency(product.ราคา);
+
+      // Show modal
+      document.getElementById('productOptionsModal').classList.add('active');
+    }
+
+    function closeProductOptionsModal() {
+      document.getElementById('productOptionsModal').classList.remove('active');
+    }
+
+    function updateOptionsPrice() {
+      const productId = document.getElementById('selectedProductId').value;
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      let basePrice = parseFloat(product.ราคา);
+
+      // Add selected options prices
+      document.querySelectorAll('#productOptionsContainer input[type="radio"]:checked').forEach(input => {
+        basePrice += parseFloat(input.dataset.price || 0);
+      });
+
+      document.getElementById('optionsPrice').textContent = formatCurrency(basePrice);
+    }
+
+    function decreaseQuantity() {
+      const input = document.getElementById('optionsQuantity');
+      if (input.value > 1) {
+        input.value = parseInt(input.value) - 1;
+      }
+    }
+
+    function increaseQuantity() {
+      const input = document.getElementById('optionsQuantity');
+      input.value = parseInt(input.value) + 1;
+    }
+
+    function confirmAddToCart() {
+      const productId = document.getElementById('selectedProductId').value;
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      const quantity = parseInt(document.getElementById('optionsQuantity').value);
+      const note = document.getElementById('optionsNote').value;
+
+      // Get selected options
+      const selectedOptions = {};
+      let finalPrice = parseFloat(product.ราคา);
+
+      document.querySelectorAll('#productOptionsContainer input[type="radio"]:checked').forEach(input => {
+        const groupName = input.name.replace('option-', '');
+        const option = productOptions.find(o => o.id === input.value);
+        if (option) {
+          selectedOptions[groupName] = option.ชื่อตัวเลือก;
+          finalPrice += parseFloat(option.ปรับราคา || 0);
+        }
+      });
+
+      addToCart({
+        productId: product.id,
+        productName: product.ชื่อสินค้า,
+        price: finalPrice,
+        quantity: quantity,
+        options: selectedOptions,
+        note: note
+      });
+
+      closeProductOptionsModal();
+      showToast('เพิ่มสินค้าลงตะกร้าแล้ว');
+    }
+
+    function addToCart(item) {
+      cart.push({
+        ...item,
+        cartId: Date.now() + Math.random()
+      });
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const container = document.getElementById('cartItemsList');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-8">ไม่มีสินค้าในตะกร้า</p>';
+        checkoutBtn.disabled = true;
+        document.getElementById('cartTotal').textContent = '฿0';
+        document.getElementById('cartItemCount').textContent = '0 รายการ';
+        return;
+      }
+
+      let html = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const optionsText = Object.values(item.options).join(', ');
+
+        html += `
+          <div class="border-b pb-3 mb-3">
+            <div class="flex justify-between items-start mb-1">
+              <div class="flex-1">
+                <p class="font-semibold text-gray-800">${item.productName}</p>
+                ${optionsText ? `<p class="text-xs text-gray-500">${optionsText}</p>` : ''}
+                ${item.note ? `<p class="text-xs text-gray-500">หมายเหตุ: ${item.note}</p>` : ''}
+              </div>
+              <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <div class="flex items-center gap-2">
+                <button onclick="decreaseCartQuantity(${index})" class="text-gray-600 hover:text-gray-800">
+                  <i class="fas fa-minus-circle"></i>
+                </button>
+                <span class="font-semibold">${item.quantity}</span>
+                <button onclick="increaseCartQuantity(${index})" class="text-gray-600 hover:text-gray-800">
+                  <i class="fas fa-plus-circle"></i>
+                </button>
+              </div>
+              <span class="font-bold text-green-600">฿${itemTotal}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      document.getElementById('cartTotal').textContent = formatCurrency(total);
+      document.getElementById('cartItemCount').textContent = `${cart.length} รายการ`;
+      checkoutBtn.disabled = false;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartDisplay();
+    }
+
+    function decreaseCartQuantity(index) {
+      if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+        updateCartDisplay();
+      }
+    }
+
+    function increaseCartQuantity(index) {
+      cart[index].quantity++;
+      updateCartDisplay();
+    }
+
+    function clearCart() {
+      if (cart.length === 0) return;
+
+      Swal.fire({
+        title: 'ยืนยันการล้างตะกร้า?',
+        text: 'รายการทั้งหมดจะถูกลบ',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          cart = [];
+          updateCartDisplay();
+        }
+      });
+    }
+
+    function showPaymentModal() {
+      if (cart.length === 0) return;
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      document.getElementById('paymentItemCount').textContent = `${cart.length} รายการ`;
+      document.getElementById('paymentTotal').textContent = formatCurrency(total);
+      document.getElementById('paymentOrderNumber').value = '';
+      document.getElementById('paymentCustomerName').value = '';
+
+      // Reset payment methods
+      document.getElementById('paymentMethodsContainer').innerHTML = `
+        <div class="payment-method-item mb-4 p-4 border border-gray-200 rounded-lg">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm mb-1">ประเภท</label>
+              <select class="form-control payment-type" onchange="handlePaymentTypeChange(this)">
+                <option value="เงินสด">เงินสด</option>
+                <option value="โอน">โอน</option>
+                <option value="QR Code">QR Code</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm mb-1">จำนวนเงิน</label>
+              <input type="number" class="form-control payment-amount" placeholder="0" step="0.01" value="${total}">
+            </div>
+          </div>
+          <div class="qr-container hidden mt-3">
+            <div class="text-center">
+              <img class="qr-code-img mx-auto mb-2" src="" alt="QR Code" style="max-width: 250px;">
+              <p class="text-sm text-gray-600">สแกนเพื่อชำระเงิน</p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('paymentModal').classList.add('active');
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').classList.remove('active');
+    }
+
+    function handlePaymentTypeChange(select) {
+      const container = select.closest('.payment-method-item');
+      const qrContainer = container.querySelector('.qr-container');
+      const qrImg = container.querySelector('.qr-code-img');
+
+      if (select.value === 'QR Code') {
+        // Generate QR Code
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const promptpayNumber = settings.เลขพร้อมเพย์ || '0123456789';
+        const qrUrl = `https://promptpay.io/${promptpayNumber}/${total}.png`;
+
+        qrImg.src = qrUrl;
+        qrContainer.classList.remove('hidden');
+      } else {
+        qrContainer.classList.add('hidden');
+      }
+    }
+
+    function addPaymentMethod() {
+      const container = document.getElementById('paymentMethodsContainer');
+      const newMethod = document.createElement('div');
+      newMethod.className = 'payment-method-item mb-4 p-4 border border-gray-200 rounded-lg';
+      newMethod.innerHTML = `
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-semibold">วิธีชำระเงิน #${container.children.length + 1}</span>
+          <button onclick="this.closest('.payment-method-item').remove()" class="text-red-500 hover:text-red-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm mb-1">ประเภท</label>
+            <select class="form-control payment-type" onchange="handlePaymentTypeChange(this)">
+              <option value="เงินสด">เงินสด</option>
+              <option value="โอน">โอน</option>
+              <option value="QR Code">QR Code</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm mb-1">จำนวนเงิน</label>
+            <input type="number" class="form-control payment-amount" placeholder="0" step="0.01">
+          </div>
+        </div>
+        <div class="qr-container hidden mt-3">
+          <div class="text-center">
+            <img class="qr-code-img mx-auto mb-2" src="" alt="QR Code" style="max-width: 250px;">
+            <p class="text-sm text-gray-600">สแกนเพื่อชำระเงิน</p>
+          </div>
+        </div>
+      `;
+      container.appendChild(newMethod);
+    }
+
+    function confirmPayment() {
+      const orderNumber = document.getElementById('paymentOrderNumber').value.trim();
+      const channel = document.getElementById('paymentChannel').value;
+      const customerName = document.getElementById('paymentCustomerName').value.trim();
+
+      // Collect payment methods
+      const paymentMethods = [];
+      document.querySelectorAll('.payment-method-item').forEach(item => {
+        const type = item.querySelector('.payment-type').value;
+        const amount = parseFloat(item.querySelector('.payment-amount').value) || 0;
+        if (amount > 0) {
+          paymentMethods.push({ type, amount });
+        }
+      });
+
+      if (paymentMethods.length === 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'กรุณาระบุจำนวนเงิน',
+          text: 'กรุณากรอกจำนวนเงินอย่างน้อย 1 วิธี'
+        });
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const paid = paymentMethods.reduce((sum, pm) => sum + pm.amount, 0);
+
+      showLoading('กำลังบันทึกการขาย...');
+
+      // Prepare order data
+      const orderData = {
+        sheetId: currentSheetId,
+        orderNumber: orderNumber,
+        channel: channel,
+        customerName: customerName,
+        items: cart,
+        total: total,
+        paymentMethods: paymentMethods,
+        paid: paid,
+        change: paid - total
+      };
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'บันทึกการขายสำเร็จ!',
+              text: `เลขที่ออเดอร์: ${result.orderNumber}`,
+              timer: 2000
+            });
+
+            // Clear cart
+            cart = [];
+            updateCartDisplay();
+            closePaymentModal();
+
+            // Reload today's sales
+            loadTodaySalesHistory();
+            loadDashboardData();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .saveSale(orderData);
+    }
+
+    function loadTodaySalesHistory() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          const tbody = document.getElementById('todaySalesTable');
+
+          if (!result.success || result.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-8">ไม่มีรายการขาย</td></tr>';
+            return;
+          }
+
+          let html = '';
+          result.data.forEach(order => {
+            const statusBadge = order.สถานะ === 'เสร็จสิ้น' ? 'badge-success' :
+                               order.สถานะ === 'พร้อมเสิร์ฟ' ? 'badge-success' :
+                               order.สถานะ === 'กำลังทำ' ? 'badge-info' : 'badge-warning';
+
+            html += `
+              <tr>
+                <td>${order.เลขที่ออเดอร์}</td>
+                <td>${new Date(order.วันที่เวลา).toLocaleTimeString('th-TH')}</td>
+                <td>${order.รายการสินค้า}</td>
+                <td class="font-semibold text-green-600">฿${order.ยอดรวม}</td>
+                <td><span class="badge ${statusBadge}">${order.สถานะ}</span></td>
+                <td>
+                  <button onclick="viewOrderDetail('${order.เลขที่ออเดอร์}')" class="btn btn-info btn-sm">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+
+          tbody.innerHTML = html;
+        })
+        .withFailureHandler(function() {})
+        .getTodaySales(currentSheetId);
+    }
+
+    function viewOrderDetail(orderNumber) {
+      document.getElementById('detailOrderNumber').textContent = orderNumber;
+      document.getElementById('orderDetailContent').innerHTML = '<div class="spinner"></div>';
+      document.getElementById('orderDetailModal').classList.add('active');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            const order = result.data;
+            let html = `
+              <div class="space-y-4">
+                <div>
+                  <p class="text-sm text-gray-600">วันที่-เวลา:</p>
+                  <p class="font-semibold">${new Date(order.วันที่เวลา).toLocaleString('th-TH')}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">ช่องทาง:</p>
+                  <p class="font-semibold">${order.ช่องทาง}</p>
+                </div>
+                ${order.ชื่อลูกค้า ? `<div><p class="text-sm text-gray-600">ลูกค้า:</p><p class="font-semibold">${order.ชื่อลูกค้า}</p></div>` : ''}
+                <div>
+                  <p class="text-sm text-gray-600 mb-2">รายการสินค้า:</p>
+                  <div class="bg-gray-50 p-3 rounded">${order.รายการสินค้า}</div>
+                </div>
+                <div class="border-t pt-3">
+                  <div class="flex justify-between mb-1">
+                    <span class="text-gray-600">ยอดรวม:</span>
+                    <span class="font-bold text-lg">฿${order.ยอดรวม}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-gray-600">การชำระเงิน:</span>
+                    <span>${order.การชำระเงิน}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+            document.getElementById('orderDetailContent').innerHTML = html;
+          } else {
+            document.getElementById('orderDetailContent').innerHTML = '<p class="text-red-500">ไม่พบข้อมูล</p>';
+          }
+        })
+        .withFailureHandler(handleError)
+        .getOrderDetail(currentSheetId, orderNumber);
+    }
+
+    function closeOrderDetailModal() {
+      document.getElementById('orderDetailModal').classList.remove('active');
+    }
+
+    // ===================================
+    // KITCHEN QUEUE FUNCTIONS
+    // ===================================
+
+    function loadKitchenQueue() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (!result.success) return;
+
+          const stats = result.stats;
+          document.getElementById('queuePending').textContent = stats.pending;
+          document.getElementById('queueInProgress').textContent = stats.inProgress;
+          document.getElementById('queueReady').textContent = stats.ready;
+          document.getElementById('queueTotal').textContent = stats.pending + stats.inProgress + stats.ready;
+
+          const container = document.getElementById('kitchenQueueContainer');
+          const orders = result.data;
+
+          if (orders.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">ไม่มีคิว</p>';
+            return;
+          }
+
+          let html = '';
+          orders.forEach(order => {
+            const statusClass = order.สถานะ === 'รอทำ' ? 'status-pending' :
+                               order.สถานะ === 'กำลังทำ' ? 'status-in-progress' : 'status-ready';
+            const statusColor = order.สถานะ === 'รอทำ' ? 'warning' :
+                               order.สถานะ === 'กำลังทำ' ? 'info' : 'success';
+
+            html += `
+              <div class="order-card ${statusClass}">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 class="font-bold text-lg">#${order.เลขที่ออเดอร์}</h3>
+                    <p class="text-sm text-gray-600">${new Date(order.วันที่เวลา).toLocaleTimeString('th-TH')}</p>
+                  </div>
+                  <span class="badge badge-${statusColor}">${order.สถานะ}</span>
+                </div>
+                <div class="mb-3 text-sm bg-gray-50 p-2 rounded">
+                  ${order.รายการสินค้า}
+                </div>
+                <div class="flex gap-2">
+                  ${order.สถานะ === 'รอทำ' ? `<button onclick="updateQueueStatus('${order.เลขที่ออเดอร์}', 'กำลังทำ')" class="btn btn-info btn-sm flex-1"><i class="fas fa-play"></i> เริ่มทำ</button>` : ''}
+                  ${order.สถานะ === 'กำลังทำ' ? `<button onclick="updateQueueStatus('${order.เลขที่ออเดอร์}', 'พร้อมเสิร์ฟ')" class="btn btn-success btn-sm flex-1"><i class="fas fa-check"></i> พร้อมเสิร์ฟ</button>` : ''}
+                  ${order.สถานะ === 'พร้อมเสิร์ฟ' ? `<button onclick="updateQueueStatus('${order.เลขที่ออเดอร์}', 'เสร็จสิ้น')" class="btn btn-success btn-sm flex-1"><i class="fas fa-check-double"></i> เสร็จสิ้น</button>` : ''}
+                </div>
+              </div>
+            `;
+          });
+
+          container.innerHTML = html;
+        })
+        .withFailureHandler(handleError)
+        .getKitchenQueue(currentSheetId);
+    }
+
+    function updateQueueStatus(orderNumber, newStatus) {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showToast(`อัพเดทสถานะเป็น ${newStatus} แล้ว`);
+            loadKitchenQueue();
+            loadDashboardData();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .updateOrderStatus(currentSheetId, orderNumber, newStatus);
+    }
+
+    // ===================================
+    // PRODUCTS MANAGEMENT
+    // ===================================
+
+    function loadProductsPage() {
+      loadProductsTable();
+    }
+
+    function switchProductTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.product-tab-btn').forEach(btn => {
+        btn.classList.remove('border-green-600', 'text-green-600');
+        btn.classList.add('border-transparent', 'text-gray-500');
+      });
+      event.target.classList.add('border-green-600', 'text-green-600');
+      event.target.classList.remove('border-transparent', 'text-gray-500');
+
+      // Update tab content
+      document.querySelectorAll('.product-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.classList.add('hidden');
+      });
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-' + tabName).classList.add('active');
+
+      // Load data for the tab
+      if (tabName === 'products') {
+        loadProductsTable();
+      } else if (tabName === 'categories') {
+        loadCategoriesGrid();
+      } else if (tabName === 'options') {
+        loadOptionsPage();
+      }
+    }
+
+    function loadProductsTable() {
+      const tbody = document.getElementById('productsTableBody');
+
+      if (!products || products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-8">ไม่มีสินค้า</td></tr>';
+        return;
+      }
+
+      let html = '';
+      products.forEach(product => {
+        const category = categories.find(c => c.id === product.หมวดหมู่);
+        const categoryName = category ? category.ชื่อหมวดหมู่ : '-';
+        const statusBadge = product.สถานะ === 'เปิดใช้งาน' ? 'badge-success' : 'badge-danger';
+
+        html += `
+          <tr>
+            <td>
+              ${product.รูปภาพ ? `<img src="${product.รูปภาพ}" alt="${product.ชื่อสินค้า}" style="width:50px;height:50px;object-fit:cover;border-radius:8px;">` : '<div style="width:50px;height:50px;background:#f3f4f6;border-radius:8px;"></div>'}
+            </td>
+            <td class="font-semibold">${product.ชื่อสินค้า}</td>
+            <td>${categoryName}</td>
+            <td class="font-bold text-green-600">฿${product.ราคา}</td>
+            <td><span class="badge ${statusBadge}">${product.สถานะ}</span></td>
+            <td>
+              <button onclick="editProduct('${product.id}')" class="btn btn-info btn-sm">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteProduct('${product.id}')" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function showAddProductModal() {
+      document.getElementById('productModalTitle').textContent = 'เพิ่มสินค้า';
+      document.getElementById('productForm').reset();
+      document.getElementById('productId').value = '';
+
+      // Load categories into dropdown
+      const select = document.getElementById('productCategory');
+      select.innerHTML = '<option value="">เลือกหมวดหมู่</option>';
+      categories.forEach(cat => {
+        if (cat.สถานะ === 'เปิดใช้งาน') {
+          select.innerHTML += `<option value="${cat.id}">${cat.ชื่อหมวดหมู่}</option>`;
+        }
+      });
+
+      document.getElementById('productModal').classList.add('active');
+    }
+
+    function editProduct(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+
+      document.getElementById('productModalTitle').textContent = 'แก้ไขสินค้า';
+      document.getElementById('productId').value = product.id;
+      document.getElementById('productName').value = product.ชื่อสินค้า;
+      document.getElementById('productCategory').value = product.หมวดหมู่;
+      document.getElementById('productPrice').value = product.ราคา;
+      document.getElementById('productImage').value = product.รูปภาพ || '';
+      document.getElementById('productDescription').value = product.คำอธิบาย || '';
+      document.getElementById('productActive').checked = product.สถานะ === 'เปิดใช้งาน';
+
+      // Load categories
+      const select = document.getElementById('productCategory');
+      select.innerHTML = '<option value="">เลือกหมวดหมู่</option>';
+      categories.forEach(cat => {
+        select.innerHTML += `<option value="${cat.id}" ${cat.id === product.หมวดหมู่ ? 'selected' : ''}>${cat.ชื่อหมวดหมู่}</option>`;
+      });
+
+      document.getElementById('productModal').classList.add('active');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.remove('active');
+    }
+
+    function saveProduct(event) {
+      event.preventDefault();
+
+      const productData = {
+        id: document.getElementById('productId').value,
+        sheetId: currentSheetId,
+        ชื่อสินค้า: document.getElementById('productName').value,
+        หมวดหมู่: document.getElementById('productCategory').value,
+        ราคา: parseFloat(document.getElementById('productPrice').value),
+        รูปภาพ: document.getElementById('productImage').value,
+        คำอธิบาย: document.getElementById('productDescription').value,
+        สถานะ: document.getElementById('productActive').checked ? 'เปิดใช้งาน' : 'ปิดใช้งาน'
+      };
+
+      showLoading('กำลังบันทึก...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            showToast('บันทึกสินค้าสำเร็จ');
+            closeProductModal();
+            loadProducts();
+            loadProductsTable();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .saveProduct(productData);
+    }
+
+    function deleteProduct(productId) {
+      Swal.fire({
+        title: 'ยืนยันการลบ?',
+        text: 'คุณต้องการลบสินค้านี้หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#ef4444'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          google.script.run
+            .withSuccessHandler(function(result) {
+              if (result.success) {
+                showToast('ลบสินค้าสำเร็จ');
+                loadProducts();
+                loadProductsTable();
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด',
+                  text: result.error
+                });
+              }
+            })
+            .withFailureHandler(handleError)
+            .deleteProduct(currentSheetId, productId);
+        }
+      });
+    }
+
+    function loadCategoriesGrid() {
+      const grid = document.getElementById('categoriesGrid');
+
+      if (!categories || categories.length === 0) {
+        grid.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">ไม่มีหมวดหมู่</p>';
+        return;
+      }
+
+      let html = '';
+      categories.forEach(cat => {
+        const statusBadge = cat.สถานะ === 'เปิดใช้งาน' ? 'badge-success' : 'badge-danger';
+        html += `
+          <div class="card">
+            <div class="flex items-center gap-3 mb-3">
+              <div style="width:40px;height:40px;background:${cat.สี};border-radius:8px;"></div>
+              <div class="flex-1">
+                <h3 class="font-bold">${cat.ชื่อหมวดหมู่}</h3>
+                <span class="badge ${statusBadge}">${cat.สถานะ}</span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="editCategory('${cat.id}')" class="btn btn-info btn-sm flex-1">
+                <i class="fas fa-edit"></i> แก้ไข
+              </button>
+              <button onclick="deleteCategory('${cat.id}')" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    function showAddCategoryModal() {
+      document.getElementById('categoryModalTitle').textContent = 'เพิ่มหมวดหมู่';
+      document.getElementById('categoryForm').reset();
+      document.getElementById('categoryId').value = '';
+      document.getElementById('categoryModal').classList.add('active');
+    }
+
+    function editCategory(categoryId) {
+      const category = categories.find(c => c.id === categoryId);
+      if (!category) return;
+
+      document.getElementById('categoryModalTitle').textContent = 'แก้ไขหมวดหมู่';
+      document.getElementById('categoryId').value = category.id;
+      document.getElementById('categoryName').value = category.ชื่อหมวดหมู่;
+      document.getElementById('categoryColor').value = category.สี || '#10b981';
+      document.getElementById('categoryActive').checked = category.สถานะ === 'เปิดใช้งาน';
+      document.getElementById('categoryModal').classList.add('active');
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.remove('active');
+    }
+
+    function saveCategory(event) {
+      event.preventDefault();
+
+      const categoryData = {
+        id: document.getElementById('categoryId').value,
+        sheetId: currentSheetId,
+        ชื่อหมวดหมู่: document.getElementById('categoryName').value,
+        สี: document.getElementById('categoryColor').value,
+        สถานะ: document.getElementById('categoryActive').checked ? 'เปิดใช้งาน' : 'ปิดใช้งาน'
+      };
+
+      showLoading('กำลังบันทึก...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            showToast('บันทึกหมวดหมู่สำเร็จ');
+            closeCategoryModal();
+            loadCategories();
+            loadCategoriesGrid();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .saveCategory(categoryData);
+    }
+
+    function deleteCategory(categoryId) {
+      Swal.fire({
+        title: 'ยืนยันการลบ?',
+        text: 'คุณต้องการลบหมวดหมู่นี้หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#ef4444'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          google.script.run
+            .withSuccessHandler(function(result) {
+              if (result.success) {
+                showToast('ลบหมวดหมู่สำเร็จ');
+                loadCategories();
+                loadCategoriesGrid();
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด',
+                  text: result.error
+                });
+              }
+            })
+            .withFailureHandler(handleError)
+            .deleteCategory(currentSheetId, categoryId);
+        }
+      });
+    }
+
+    function loadOptionsPage() {
+      // Simplified version - show message
+      const container = document.getElementById('optionGroupsContainer');
+      container.innerHTML = `
+        <div class="card">
+          <p class="text-gray-600 text-center py-8">
+            <i class="fas fa-info-circle text-4xl mb-3"></i><br>
+            การจัดการตัวเลือกสินค้าสามารถทำได้ผ่านระบบหลังบ้าน<br>
+            กรุณาติดต่อผู้ดูแลระบบ
+          </p>
+        </div>
+      `;
+    }
+
+    function showAddOptionGroupModal() {
+      Swal.fire({
+        icon: 'info',
+        title: 'ฟีเจอร์นี้ยังไม่เปิดใช้งาน',
+        text: 'กรุณาติดต่อผู้ดูแลระบบเพื่อจัดการตัวเลือกสินค้า'
+      });
+    }
+
+    // ===================================
+    // MATERIALS MANAGEMENT
+    // ===================================
+
+    function loadMaterialsPage() {
+      const tbody = document.getElementById('materialsTableBody');
+
+      if (!materials || materials.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500 py-8">ไม่มีวัตถุดิบ</td></tr>';
+        return;
+      }
+
+      let html = '';
+      materials.forEach(material => {
+        const stock = parseFloat(material.สต็อกคงเหลือ || 0);
+        const reorder = parseFloat(material.จุดสั่งซื้อ || 0);
+        const statusBadge = stock <= reorder ? 'badge-danger' : 'badge-success';
+        const statusText = stock <= reorder ? 'ต่ำ' : 'ปกติ';
+
+        html += `
+          <tr>
+            <td class="font-semibold">${material.ชื่อวัตถุดิบ}</td>
+            <td>${material.หน่วย}</td>
+            <td>฿${material.ราคาต่อหน่วย}</td>
+            <td>${stock} ${material.หน่วย}</td>
+            <td>${reorder} ${material.หน่วย}</td>
+            <td><span class="badge ${statusBadge}">${statusText}</span></td>
+            <td>
+              <button onclick="editMaterial('${material.id}')" class="btn btn-info btn-sm">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteMaterial('${material.id}')" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function showAddMaterialModal() {
+      document.getElementById('materialModalTitle').textContent = 'เพิ่มวัตถุดิบ';
+      document.getElementById('materialForm').reset();
+      document.getElementById('materialId').value = '';
+      document.getElementById('materialModal').classList.add('active');
+    }
+
+    function editMaterial(materialId) {
+      const material = materials.find(m => m.id === materialId);
+      if (!material) return;
+
+      document.getElementById('materialModalTitle').textContent = 'แก้ไขวัตถุดิบ';
+      document.getElementById('materialId').value = material.id;
+      document.getElementById('materialName').value = material.ชื่อวัตถุดิบ;
+      document.getElementById('materialUnit').value = material.หน่วย;
+      document.getElementById('materialPrice').value = material.ราคาต่อหน่วย;
+      document.getElementById('materialStock').value = material.สต็อกคงเหลือ || 0;
+      document.getElementById('materialReorderPoint').value = material.จุดสั่งซื้อ || 0;
+      document.getElementById('materialModal').classList.add('active');
+    }
+
+    function closeMaterialModal() {
+      document.getElementById('materialModal').classList.remove('active');
+    }
+
+    function saveMaterial(event) {
+      event.preventDefault();
+
+      const materialData = {
+        id: document.getElementById('materialId').value,
+        sheetId: currentSheetId,
+        ชื่อวัตถุดิบ: document.getElementById('materialName').value,
+        หน่วย: document.getElementById('materialUnit').value,
+        ราคาต่อหน่วย: parseFloat(document.getElementById('materialPrice').value),
+        สต็อกคงเหลือ: parseFloat(document.getElementById('materialStock').value),
+        จุดสั่งซื้อ: parseFloat(document.getElementById('materialReorderPoint').value)
+      };
+
+      showLoading('กำลังบันทึก...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            showToast('บันทึกวัตถุดิบสำเร็จ');
+            closeMaterialModal();
+            loadMaterials();
+            loadMaterialsPage();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .saveMaterial(materialData);
+    }
+
+    function deleteMaterial(materialId) {
+      Swal.fire({
+        title: 'ยืนยันการลบ?',
+        text: 'คุณต้องการลบวัตถุดิบนี้หรือไม่?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ลบ',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#ef4444'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          google.script.run
+            .withSuccessHandler(function(result) {
+              if (result.success) {
+                showToast('ลบวัตถุดิบสำเร็จ');
+                loadMaterials();
+                loadMaterialsPage();
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด',
+                  text: result.error
+                });
+              }
+            })
+            .withFailureHandler(handleError)
+            .deleteMaterial(currentSheetId, materialId);
+        }
+      });
+    }
+
+    // ===================================
+    // COSTS, REPORTS, SETTINGS, ETC.
+    // ===================================
+
+    function loadCostsPage() {
+      // Set today's date
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('dailyCostDate').value = today;
+
+      // Initialize year selector
+      const yearSelect = document.getElementById('monthlyCostYear');
+      const currentYear = new Date().getFullYear();
+      yearSelect.innerHTML = '';
+      for (let i = currentYear - 2; i <= currentYear + 1; i++) {
+        yearSelect.innerHTML += `<option value="${i}" ${i === currentYear ? 'selected' : ''}>${i + 543}</option>`;
+      }
+
+      const month = new Date().getMonth() + 1;
+      document.getElementById('monthlyCostMonth').value = month;
+    }
+
+    function switchCostTab(tabName) {
+      document.querySelectorAll('.cost-tab-btn').forEach(btn => {
+        btn.classList.remove('border-green-600', 'text-green-600');
+        btn.classList.add('border-transparent', 'text-gray-500');
+      });
+      event.target.classList.add('border-green-600', 'text-green-600');
+
+      document.querySelectorAll('.cost-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.classList.add('hidden');
+      });
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    function showAddDailyCostModal() {
+      Swal.fire({
+        icon: 'info',
+        title: 'ฟีเจอร์นี้ยังไม่เปิดใช้งาน',
+        text: 'กรุณาติดต่อผู้ดูแลระบบ'
+      });
+    }
+
+    function loadMonthlyCosts() {
+      showToast('โหลดข้อมูลรายเดือน', 'info');
+    }
+
+    function loadReportsPage() {
+      // Already rendered
+    }
+
+    function showSalesReport() {
+      showToast('กำลังสร้างรายงาน...', 'info');
+    }
+
+    function showProfitLossReport() {
+      showToast('กำลังสร้างรายงาน...', 'info');
+    }
+
+    function showBestSellersReport() {
+      showToast('กำลังสร้างรายงาน...', 'info');
+    }
+
+    function loadOrderHistory() {
+      const startDate = document.getElementById('historyStartDate').value;
+      const endDate = document.getElementById('historyEndDate').value;
+
+      if (!startDate || !endDate) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'กรุณาเลือกวันที่',
+          text: 'กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด'
+        });
+        return;
+      }
+
+      showLoading('กำลังค้นหา...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+          const tbody = document.getElementById('historyTableBody');
+
+          if (!result.success || result.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500 py-8">ไม่พบรายการ</td></tr>';
+            return;
+          }
+
+          let html = '';
+          result.data.forEach(order => {
+            const statusBadge = order.สถานะ === 'เสร็จสิ้น' ? 'badge-success' : 'badge-info';
+            html += `
+              <tr>
+                <td>${order.เลขที่ออเดอร์}</td>
+                <td>${new Date(order.วันที่เวลา).toLocaleString('th-TH')}</td>
+                <td>${order.รายการสินค้า}</td>
+                <td class="font-semibold text-green-600">฿${order.ยอดรวม}</td>
+                <td>${order.การชำระเงิน}</td>
+                <td><span class="badge ${statusBadge}">${order.สถานะ}</span></td>
+                <td>
+                  <button onclick="viewOrderDetail('${order.เลขที่ออเดอร์}')" class="btn btn-info btn-sm">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+
+          tbody.innerHTML = html;
+        })
+        .withFailureHandler(handleError)
+        .getOrderHistory(currentSheetId, startDate, endDate);
+    }
+
+    function loadSettingsPage() {
+      // Load settings data
+      if (settings) {
+        document.getElementById('settingShopName').value = settings.ชื่อร้าน || currentUser.shopName;
+        document.getElementById('settingShopAddress').value = settings.ที่อยู่ || '';
+        document.getElementById('settingShopPhone').value = settings.เบอร์โทร || '';
+        document.getElementById('settingPromptPay').value = settings.เลขพร้อมเพย์ || '';
+        document.getElementById('settingPromptPayName').value = settings.ชื่อบัญชี || '';
+
+        // License info
+        if (currentUser) {
+          document.getElementById('licenseType').textContent = currentUser.licenseType === 'monthly' ? 'รายเดือน' : 'รายปี';
+          document.getElementById('licenseExpiry').textContent = new Date(currentUser.licenseExpiry).toLocaleDateString('th-TH');
+
+          const daysLeft = Math.ceil((new Date(currentUser.licenseExpiry) - new Date()) / (1000 * 60 * 60 * 24));
+          const statusBadge = daysLeft > 30 ? 'badge-success' : daysLeft > 0 ? 'badge-warning' : 'badge-danger';
+          const statusText = daysLeft > 30 ? 'ใช้งานได้' : daysLeft > 0 ? `เหลือ ${daysLeft} วัน` : 'หมดอายุ';
+
+          document.getElementById('licenseStatus').className = `badge ${statusBadge}`;
+          document.getElementById('licenseStatus').textContent = statusText;
+        }
+      }
+    }
+
+    function saveShopInfo(event) {
+      event.preventDefault();
+
+      const data = {
+        sheetId: currentSheetId,
+        ชื่อร้าน: document.getElementById('settingShopName').value,
+        ที่อยู่: document.getElementById('settingShopAddress').value,
+        เบอร์โทร: document.getElementById('settingShopPhone').value
+      };
+
+      showLoading('กำลังบันทึก...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+          if (result.success) {
+            showToast('บันทึกข้อมูลสำเร็จ');
+            loadSettings();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .saveShopInfo(data);
+    }
+
+    function savePromptPaySettings(event) {
+      event.preventDefault();
+
+      const data = {
+        sheetId: currentSheetId,
+        เลขพร้อมเพย์: document.getElementById('settingPromptPay').value,
+        ชื่อบัญชี: document.getElementById('settingPromptPayName').value
+      };
+
+      showLoading('กำลังบันทึก...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+          if (result.success) {
+            showToast('บันทึกข้อมูลสำเร็จ');
+            loadSettings();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .savePromptPaySettings(data);
+    }
+
+    function saveOrderSettings(event) {
+      event.preventDefault();
+      showToast('บันทึกการตั้งค่าสำเร็จ');
+    }
+
+    function changePassword(event) {
+      event.preventDefault();
+
+      const oldPassword = document.getElementById('oldPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (newPassword !== confirmPassword) {
+        Swal.fire({
+          icon: 'error',
+          title: 'รหัสผ่านไม่ตรงกัน',
+          text: 'กรุณายืนยันรหัสผ่านให้ตรงกัน'
+        });
+        return;
+      }
+
+      showLoading('กำลังเปลี่ยนรหัสผ่าน...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'เปลี่ยนรหัสผ่านสำเร็จ',
+              text: 'กรุณาเข้าสู่ระบบใหม่อีกครั้ง'
+            }).then(() => {
+              logout();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .changePassword(currentUser.email, oldPassword, newPassword);
+    }
+
+    function contactRenewLicense() {
+      Swal.fire({
+        icon: 'info',
+        title: 'ต่ออายุใบอนุญาต',
+        html: `
+          <p>กรุณาติดต่อผู้ดูแลระบบเพื่อต่ออายุใบอนุญาต</p>
+          <p class="mt-3"><strong>อัตราค่าบริการ:</strong></p>
+          <p>รายเดือน: 199 บาท</p>
+          <p>รายปี: 1,399 บาท (ประหยัด 989 บาท)</p>
+        `
+      });
+    }
+
+    // ===================================
+    // SUPER ADMIN
+    // ===================================
+
+    function showSuperAdminLogin() {
+      document.getElementById('loginModal').classList.remove('active');
+      document.getElementById('superAdminLoginModal').classList.add('active');
+    }
+
+    function closeSuperAdminLogin() {
+      document.getElementById('superAdminLoginModal').classList.remove('active');
+      document.getElementById('loginModal').classList.add('active');
+    }
+
+    function handleSuperAdminLogin(event) {
+      event.preventDefault();
+
+      const password = document.getElementById('superAdminPassword').value;
+
+      showLoading('กำลังเข้าสู่ระบบ...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            currentUser = { isSuperAdmin: true };
+            currentSheetId = 'MASTER';
+
+            document.getElementById('superAdminLoginModal').classList.remove('active');
+            document.getElementById('loginModal').classList.remove('active');
+
+            Swal.fire({
+              icon: 'success',
+              title: 'เข้าสู่ระบบสำเร็จ',
+              text: 'ยินดีต้อนรับ Super Admin',
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            navigateTo('superadmin');
+            loadSuperAdminData();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'รหัสผ่านไม่ถูกต้อง',
+              text: 'กรุณาลองใหม่อีกครั้ง'
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .superAdminLogin(password);
+    }
+
+    function loadSuperAdminData() {
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            document.getElementById('totalShops').textContent = result.stats.total;
+            document.getElementById('activeShops').textContent = result.stats.active;
+            document.getElementById('expiringShops').textContent = result.stats.expiring;
+            document.getElementById('expiredShops').textContent = result.stats.expired;
+
+            renderShopsTable(result.shops);
+          }
+        })
+        .withFailureHandler(handleError)
+        .getAllShops();
+    }
+
+    function renderShopsTable(shops) {
+      const tbody = document.getElementById('shopsTableBody');
+
+      if (!shops || shops.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-8">ไม่มีร้านค้า</td></tr>';
+        return;
+      }
+
+      let html = '';
+      shops.forEach(shop => {
+        const daysLeft = Math.ceil((new Date(shop.วันหมดอายุ) - new Date()) / (1000 * 60 * 60 * 24));
+        const statusBadge = daysLeft > 30 ? 'badge-success' : daysLeft > 0 ? 'badge-warning' : 'badge-danger';
+        const statusText = daysLeft > 30 ? 'ใช้งานได้' : daysLeft > 0 ? `เหลือ ${daysLeft} วัน` : 'หมดอายุ';
+
+        html += `
+          <tr>
+            <td class="font-semibold">${shop.ชื่อร้าน}</td>
+            <td>${shop.อีเมล}</td>
+            <td>${shop.ประเภท === 'monthly' ? 'รายเดือน' : 'รายปี'}</td>
+            <td>${new Date(shop.วันหมดอายุ).toLocaleDateString('th-TH')}</td>
+            <td><span class="badge ${statusBadge}">${statusText}</span></td>
+            <td>
+              <button onclick="renewShopLicense('${shop.id}')" class="btn btn-warning btn-sm">
+                <i class="fas fa-sync"></i> ต่ออายุ
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function showCreateShopModal() {
+      document.getElementById('createShopForm').reset();
+      document.getElementById('createShopModal').classList.add('active');
+    }
+
+    function closeCreateShopModal() {
+      document.getElementById('createShopModal').classList.remove('active');
+    }
+
+    function createShop(event) {
+      event.preventDefault();
+
+      const shopData = {
+        shopName: document.getElementById('newShopName').value,
+        email: document.getElementById('newShopEmail').value,
+        password: document.getElementById('newShopPassword').value,
+        licenseType: document.getElementById('newShopLicenseType').value,
+        address: document.getElementById('newShopAddress').value,
+        phone: document.getElementById('newShopPhone').value
+      };
+
+      showLoading('กำลังสร้างร้าน...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          hideLoading();
+
+          if (result.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'สร้างร้านสำเร็จ!',
+              text: `ร้าน ${shopData.shopName} ถูกสร้างเรียบร้อยแล้ว`
+            });
+
+            closeCreateShopModal();
+            loadSuperAdminData();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: result.error
+            });
+          }
+        })
+        .withFailureHandler(handleError)
+        .createNewShop(shopData);
+    }
+
+    function renewShopLicense(shopId) {
+      Swal.fire({
+        title: 'ต่ออายุใบอนุญาต',
+        input: 'select',
+        inputOptions: {
+          'monthly': 'รายเดือน (199 บาท)',
+          'yearly': 'รายปี (1,399 บาท)'
+        },
+        inputPlaceholder: 'เลือกประเภท',
+        showCancelButton: true,
+        confirmButtonText: 'ยืนยัน',
+        cancelButtonText: 'ยกเลิก'
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          showLoading('กำลังต่ออายุ...');
+
+          google.script.run
+            .withSuccessHandler(function(result) {
+              hideLoading();
+
+              if (result.success) {
+                showToast('ต่ออายุใบอนุญาตสำเร็จ');
+                loadSuperAdminData();
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด',
+                  text: result.error
+                });
+              }
+            })
+            .withFailureHandler(handleError)
+            .renewLicense(shopId, result.value);
+        }
+      });
+    }
 
   </script>
 </body>
