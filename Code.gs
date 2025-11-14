@@ -57,10 +57,13 @@ function createMasterSheet() {
     Logger.log('🔗 URL: ' + ss.getUrl());
     Logger.log('===================================');
 
-    // สร้างชีตหลัก
-    var sheetNames = ss.getSheets().map(function(s) { return s.getName(); });
-    if (sheetNames.indexOf('Sheet1') > -1) {
-      ss.getSheetByName('Sheet1').setName('ร้านทั้งหมด');
+    // สร้างชีตหลัก (รองรับทั้ง Sheet1 และ ชีต1)
+    var sheets = ss.getSheets();
+    if (sheets.length > 0) {
+      var firstSheet = sheets[0];
+      firstSheet.setName('ร้านทั้งหมด');
+    } else {
+      ss.insertSheet('ร้านทั้งหมด');
     }
 
     var mainSheet = ss.getSheetByName('ร้านทั้งหมด');
