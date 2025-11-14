@@ -8,35 +8,10 @@
 // 🔧 CONFIGURATION - ตั้งค่าพื้นฐาน
 // =====================================================
 
-// รหัสผ่าน Super Admin (สามารถเปลี่ยนได้)
-var MASTER_PASSWORD = 'superadmin123';
-
-// ดึง Master Sheet ID จาก PropertiesService (สร้างอัตโนมัติถ้ายังไม่มี)
-function getMasterSheetId() {
-  var props = PropertiesService.getScriptProperties();
-  var masterId = props.getProperty('MASTER_SHEET_ID');
-
-  if (!masterId) {
-    // สร้าง Master Sheet อัตโนมัติ
-    var result = createMasterSheet();
-    if (result.success) {
-      props.setProperty('MASTER_SHEET_ID', result.sheetId);
-      if (result.folderId) {
-        props.setProperty('MASTER_FOLDER_ID', result.folderId);
-      }
-      return result.sheetId;
-    } else {
-      throw new Error('ไม่สามารถสร้าง Master Sheet ได้: ' + result.error);
-    }
-  }
-
-  return masterId;
-}
-
-function getMasterFolderId() {
-  var props = PropertiesService.getScriptProperties();
-  return props.getProperty('MASTER_FOLDER_ID') || null;
-}
+// ⚠️ สำคัญ: ให้แก้ไข ID เหล่านี้หลังจากรัน createMasterSheet()
+var MASTER_SHEET_ID = 'YOUR_MASTER_SHEET_ID_HERE'; // ใส่ Sheet ID ของ Master Sheet
+var MASTER_FOLDER_ID = 'YOUR_MASTER_FOLDER_ID_HERE'; // ใส่ Folder ID ของ Master Folder
+var MASTER_PASSWORD = 'superadmin123'; // รหัสผ่าน Super Admin
 
 // ราคาไลเซ่นส์
 var LICENSE_PRICE = {
@@ -155,7 +130,7 @@ function createNewShop(shopData) {
     }
 
     // เช็ค Email ซ้ำ
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
     var emailCol = findColumnIndex(data[0], 'Email');
 
@@ -170,7 +145,7 @@ function createNewShop(shopData) {
     var sheetId = newSheet.getId();
 
     // สร้างโฟลเดอร์ย่อย
-    var masterFolder = DriveApp.getFolderById(getMasterFolderId());
+    var masterFolder = DriveApp.getFolderById(MASTER_FOLDER_ID);
     var shopFolder = masterFolder.createFolder(shopData.shopName + ' - ' + shopData.email);
     var folderId = shopFolder.getId();
 
@@ -490,7 +465,7 @@ function login(email, password) {
       throw new Error('กรุณากรอก Email และรหัสผ่าน');
     }
 
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
 
     // หาคอลัมน์
@@ -556,7 +531,7 @@ function login(email, password) {
  */
 function checkLicense(sheetId) {
   try {
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
 
     var sheetIdCol = findColumnIndex(data[0], 'Sheet ID');
@@ -600,7 +575,7 @@ function changePassword(email, oldPassword, newPassword) {
       throw new Error('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
     }
 
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
 
     var emailCol = findColumnIndex(data[0], 'Email');
@@ -2321,7 +2296,7 @@ function superAdminLogin(password) {
  */
 function getAllShops() {
   try {
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
 
     var shops = [];
@@ -2368,7 +2343,7 @@ function getAllShops() {
  */
 function updateShop(shopId, shopData) {
   try {
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
 
     for (var i = 1; i < data.length; i++) {
@@ -2403,7 +2378,7 @@ function updateShop(shopId, shopData) {
  */
 function renewLicense(shopId, packageType) {
   try {
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
 
     for (var i = 1; i < data.length; i++) {
@@ -2446,7 +2421,7 @@ function renewLicense(shopId, packageType) {
  */
 function deleteShop(shopId) {
   try {
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var data = masterSheet.getDataRange().getValues();
 
     for (var i = 1; i < data.length; i++) {
@@ -2612,7 +2587,7 @@ function updateSettings(sheetId, settingsData) {
 function uploadFileToDrive(sheetId, base64Data, filename, mimeType) {
   try {
     // หา Folder ID
-    var masterSheet = SpreadsheetApp.openById(getMasterSheetId()).getSheetByName('ร้านทั้งหมด');
+    var masterSheet = SpreadsheetApp.openById(MASTER_SHEET_ID).getSheetByName('ร้านทั้งหมด');
     var masterData = masterSheet.getDataRange().getValues();
     var folderId = '';
 
