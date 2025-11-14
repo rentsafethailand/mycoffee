@@ -211,11 +211,8 @@ function createNewShop(shopData) {
 function setupShopSheets(sheetId, shopData) {
   var ss = SpreadsheetApp.openById(sheetId);
 
-  // ลบชีตเริ่มต้น
-  var sheets = ss.getSheets();
-  if (sheets.length > 0) {
-    ss.deleteSheet(sheets[0]);
-  }
+  // เก็บ sheet เริ่มต้นไว้ลบทีหลัง (ลบทิ้งไม่ได้เพราะต้องมีอย่างน้อย 1 sheet)
+  var sheetsToDelete = ss.getSheets();
 
   // 1. ชีต: ตั้งค่า
   var settingsSheet = ss.insertSheet('ตั้งค่า');
@@ -334,6 +331,11 @@ function setupShopSheets(sheetId, shopData) {
   costsSheet.getRange(1, 1, 1, costHeaders.length).setValues([costHeaders])
     .setBackground('#607D8B').setFontColor('#FFFFFF').setFontWeight('bold');
   costsSheet.setColumnWidths(1, costHeaders.length, 150);
+
+  // ลบ sheet เริ่มต้น (ชีต1 หรือ Sheet1) หลังจากสร้าง sheet ใหม่หมดแล้ว
+  for (var i = 0; i < sheetsToDelete.length; i++) {
+    ss.deleteSheet(sheetsToDelete[i]);
+  }
 
   Logger.log('✅ สร้างโครงสร้างชีตสำเร็จ');
 }
