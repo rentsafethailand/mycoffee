@@ -2056,7 +2056,7 @@
       var now = new Date();
       var timeStr = now.toLocaleTimeString('th-TH');
       var elements = document.querySelectorAll('.current-time');
-      elements.forEach(function(el) { return el.textContent; } = timeStr);
+      elements.forEach(function(el) { el.textContent = timeStr; });
     }
 
     // ===================================
@@ -2151,7 +2151,7 @@
     function navigateTo(pageName) {
       // Hide all pages
       var pages = document.querySelectorAll('.page');
-      pages.forEach(function(page) { return page.classList.remove; }('active'));
+      pages.forEach(function(page) { page.classList.remove('active'); });
 
       // Show selected page
       var targetPage = document.getElementById('page-' + pageName);
@@ -2475,10 +2475,10 @@
 
     function renderPOSProducts(categoryFilter = 'all') {
       var grid = document.getElementById('posProductGrid');
-      var filtered = products.filter(function(p) { return p.; }สถานะ === 'เปิดใช้งาน');
+      var filtered = products.filter(function(p) { return p.สถานะ === 'เปิดใช้งาน'; });
 
       if (categoryFilter !== 'all') {
-        filtered = filtered.filter(function(p) { return p.; }หมวดหมู่ === categoryFilter);
+        filtered = filtered.filter(function(p) { return p.หมวดหมู่ === categoryFilter; });
       }
 
       if (filtered.length === 0) {
@@ -2512,11 +2512,11 @@
     }
 
     function selectProduct(productId) {
-      var product = products.find(function(p) { return p.id; } === productId);
+      var product = products.find(function(p) { return p.id === productId; });
       if (!product) return;
 
       // Check if product has options
-      var hasOptions = productOptions.some(function(opt) { return opt.; }สถานะ === 'เปิดใช้งาน');
+      var hasOptions = productOptions.some(function(opt) { return opt.สถานะ === 'เปิดใช้งาน'; });
 
       if (hasOptions) {
         showProductOptionsModal(product);
@@ -2593,7 +2593,7 @@
 
     function updateOptionsPrice() {
       var productId = document.getElementById('selectedProductId').value;
-      var product = products.find(function(p) { return p.id; } === productId);
+      var product = products.find(function(p) { return p.id === productId; });
       if (!product) return;
 
       var basePrice = parseFloat(product.ราคา);
@@ -2620,7 +2620,7 @@
 
     function confirmAddToCart() {
       var productId = document.getElementById('selectedProductId').value;
-      var product = products.find(function(p) { return p.id; } === productId);
+      var product = products.find(function(p) { return p.id === productId; });
       if (!product) return;
 
       var quantity = parseInt(document.getElementById('optionsQuantity').value);
@@ -2632,7 +2632,7 @@
 
       document.querySelectorAll('#productOptionsContainer input[type="radio"]:checked').forEach(function(input) {
         var groupName = input.name.replace('option-', '');
-        var option = productOptions.find(function(o) { return o.id; } === input.value);
+        var option = productOptions.find(function(o) { return o.id === input.value; });
         if (option) {
           selectedOptions[groupName] = option.ชื่อตัวเลือก;
           finalPrice += parseFloat(option.ปรับราคา || 0);
@@ -3128,7 +3128,7 @@
 
       var html = '';
       products.forEach(function(product) {
-        var category = categories.find(function(c) { return c.id; } === product.หมวดหมู่);
+        var category = categories.find(function(c) { return c.id === product.หมวดหมู่; });
         var categoryName = category ? category.ชื่อหมวดหมู่ : '-';
         var statusBadge = product.สถานะ === 'เปิดใช้งาน' ? 'badge-success' : 'badge-danger';
 
@@ -3174,7 +3174,7 @@
     }
 
     function editProduct(productId) {
-      var product = products.find(function(p) { return p.id; } === productId);
+      var product = products.find(function(p) { return p.id === productId; });
       if (!product) return;
 
       document.getElementById('productModalTitle').textContent = 'แก้ไขสินค้า';
@@ -3311,7 +3311,7 @@
     }
 
     function editCategory(categoryId) {
-      var category = categories.find(function(c) { return c.id; } === categoryId);
+      var category = categories.find(function(c) { return c.id === categoryId; });
       if (!category) return;
 
       document.getElementById('categoryModalTitle').textContent = 'แก้ไขหมวดหมู่';
@@ -3644,7 +3644,7 @@
     }
 
     function editMaterial(materialId) {
-      var material = materials.find(function(m) { return m.id; } === materialId);
+      var material = materials.find(function(m) { return m.id === materialId; });
       if (!material) return;
 
       document.getElementById('materialModalTitle').textContent = 'แก้ไขวัตถุดิบ';
