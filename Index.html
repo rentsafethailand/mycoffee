@@ -2004,16 +2004,16 @@
     // GLOBAL VARIABLES
     // ===================================
 
-    let currentUser = null;
-    let currentSheetId = null;
-    let currentPage = 'dashboard';
-    let cart = [];
-    let products = [];
-    let categories = [];
-    let productOptions = [];
-    let materials = [];
-    let settings = {};
-    let lastQueueTimestamp = null;
+    var currentUser = null;
+    var currentSheetId = null;
+    var currentPage = 'dashboard';
+    var cart = [];
+    var products = [];
+    var categories = [];
+    var productOptions = [];
+    var materials = [];
+    var settings = {};
+    var lastQueueTimestamp = null;
 
     // ===================================
     // INITIALIZATION
@@ -2025,10 +2025,10 @@
     });
 
     function checkSession() {
-      const session = localStorage.getItem('posSession');
+      var session = localStorage.getItem('posSession');
       if (session) {
         try {
-          const data = JSON.parse(session);
+          var data = JSON.parse(session);
           currentUser = data;
           currentSheetId = data.sheetId;
 
@@ -2053,10 +2053,10 @@
     }
 
     function updateCurrentTime() {
-      const now = new Date();
-      const timeStr = now.toLocaleTimeString('th-TH');
-      const elements = document.querySelectorAll('.current-time');
-      elements.forEach(el => el.textContent = timeStr);
+      var now = new Date();
+      var timeStr = now.toLocaleTimeString('th-TH');
+      var elements = document.querySelectorAll('.current-time');
+      elements.forEach(function(el) { return el.textContent; } = timeStr);
     }
 
     // ===================================
@@ -2066,8 +2066,8 @@
     function handleLogin(event) {
       event.preventDefault();
 
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
+      var email = document.getElementById('loginEmail').value;
+      var password = document.getElementById('loginPassword').value;
 
       showLoading('กำลังเข้าสู่ระบบ...');
 
@@ -2150,19 +2150,19 @@
 
     function navigateTo(pageName) {
       // Hide all pages
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(page => page.classList.remove('active'));
+      var pages = document.querySelectorAll('.page');
+      pages.forEach(function(page) { return page.classList.remove; }('active'));
 
       // Show selected page
-      const targetPage = document.getElementById('page-' + pageName);
+      var targetPage = document.getElementById('page-' + pageName);
       if (targetPage) {
         targetPage.classList.add('active');
         currentPage = pageName;
       }
 
       // Update nav active state
-      const navItems = document.querySelectorAll('.bottom-nav-item');
-      navItems.forEach(item => {
+      var navItems = document.querySelectorAll('.bottom-nav-item');
+      navItems.forEach(function(item) {
         item.classList.remove('active');
         if (item.getAttribute('data-page') === pageName) {
           item.classList.add('active');
@@ -2290,7 +2290,7 @@
             document.getElementById('todaySales').textContent = formatCurrency(result.todaySales);
             document.getElementById('todayCost').textContent = formatCurrency(result.todayCost);
 
-            const profitElement = document.getElementById('todayProfit');
+            var profitElement = document.getElementById('todayProfit');
             profitElement.textContent = formatCurrency(result.todayProfit);
             profitElement.className = result.todayProfit >= 0 ? 'text-2xl font-bold text-green-600' : 'text-2xl font-bold text-red-600';
 
@@ -2312,16 +2312,16 @@
     }
 
     function renderTopProducts(topProducts) {
-      const container = document.getElementById('topProductsList');
+      var container = document.getElementById('topProductsList');
 
       if (!topProducts || topProducts.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-center py-8">ไม่มีข้อมูล</p>';
         return;
       }
 
-      let html = '<div class="space-y-3">';
-      topProducts.forEach((product, index) => {
-        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+      var html = '<div class="space-y-3">';
+      topProducts.forEach(function(product, index) {
+        var medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
         html += `
           <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
             <div class="flex items-center gap-3">
@@ -2364,7 +2364,7 @@
       Swal.fire({
         title: message,
         allowOutsideClick: false,
-        didOpen: () => {
+        didOpen: function() {
           Swal.showLoading();
         }
       });
@@ -2383,7 +2383,7 @@
     }
 
     function showToast(message, icon = 'success') {
-      const Toast = Swal.mixin({
+      var Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -2435,7 +2435,7 @@
       google.script.run
         .withSuccessHandler(function(result) {
           if (result.success) {
-            const total = result.data.pending + result.data.inProgress;
+            var total = result.data.pending + result.data.inProgress;
             document.getElementById('currentQueue').textContent = total;
           }
         })
@@ -2448,8 +2448,8 @@
     // ===================================
 
     function loadProductsForPOS() {
-      const grid = document.getElementById('posProductGrid');
-      const filterButtons = document.getElementById('categoryFilterButtons');
+      var grid = document.getElementById('posProductGrid');
+      var filterButtons = document.getElementById('categoryFilterButtons');
 
       if (!products || products.length === 0) {
         grid.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">ไม่มีสินค้า</p>';
@@ -2457,8 +2457,8 @@
       }
 
       // Render category filter buttons
-      let categoryHTML = '';
-      categories.forEach(cat => {
+      var categoryHTML = '';
+      categories.forEach(function(cat) {
         if (cat.สถานะ === 'เปิดใช้งาน') {
           categoryHTML += `
             <button onclick="filterPOSCategory('${cat.id}')" class="btn btn-secondary category-filter-btn" data-category="${cat.id}">
@@ -2474,11 +2474,11 @@
     }
 
     function renderPOSProducts(categoryFilter = 'all') {
-      const grid = document.getElementById('posProductGrid');
-      let filtered = products.filter(p => p.สถานะ === 'เปิดใช้งาน');
+      var grid = document.getElementById('posProductGrid');
+      var filtered = products.filter(function(p) { return p.; }สถานะ === 'เปิดใช้งาน');
 
       if (categoryFilter !== 'all') {
-        filtered = filtered.filter(p => p.หมวดหมู่ === categoryFilter);
+        filtered = filtered.filter(function(p) { return p.; }หมวดหมู่ === categoryFilter);
       }
 
       if (filtered.length === 0) {
@@ -2486,8 +2486,8 @@
         return;
       }
 
-      let html = '';
-      filtered.forEach(product => {
+      var html = '';
+      filtered.forEach(function(product) {
         html += `
           <div class="product-card" onclick="selectProduct('${product.id}')">
             ${product.รูปภาพ ? `<img src="${product.รูปภาพ}" alt="${product.ชื่อสินค้า}">` : '<div style="width:80px;height:80px;background:#f3f4f6;border-radius:8px;margin-bottom:10px;"></div>'}
@@ -2501,7 +2501,7 @@
 
     function filterPOSCategory(categoryId) {
       // Update active button
-      document.querySelectorAll('.category-filter-btn').forEach(btn => {
+      document.querySelectorAll('.category-filter-btn').forEach(function(btn) {
         btn.classList.remove('active', 'btn-primary');
         btn.classList.add('btn-secondary');
       });
@@ -2512,11 +2512,11 @@
     }
 
     function selectProduct(productId) {
-      const product = products.find(p => p.id === productId);
+      var product = products.find(function(p) { return p.id; } === productId);
       if (!product) return;
 
       // Check if product has options
-      const hasOptions = productOptions.some(opt => opt.สถานะ === 'เปิดใช้งาน');
+      var hasOptions = productOptions.some(function(opt) { return opt.; }สถานะ === 'เปิดใช้งาน');
 
       if (hasOptions) {
         showProductOptionsModal(product);
@@ -2540,12 +2540,12 @@
       document.getElementById('optionsNote').value = '';
 
       // Load product options
-      const container = document.getElementById('productOptionsContainer');
-      let html = '';
+      var container = document.getElementById('productOptionsContainer');
+      var html = '';
 
       // Group options by group name
-      const groups = {};
-      productOptions.forEach(opt => {
+      var groups = {};
+      productOptions.forEach(function(opt) {
         if (opt.สถานะ === 'เปิดใช้งาน') {
           if (!groups[opt.กลุ่ม]) {
             groups[opt.กลุ่ม] = [];
@@ -2555,15 +2555,15 @@
       });
 
       // Render each group
-      Object.keys(groups).forEach(groupName => {
+      Object.keys(groups).forEach(function(groupName) {
         html += `
           <div class="mb-4">
             <label class="block font-semibold mb-2">${groupName}:</label>
             <div class="space-y-2">
         `;
 
-        groups[groupName].forEach(opt => {
-          const priceText = opt.ปรับราคา > 0 ? ` (+฿${opt.ปรับราคา})` : opt.ปรับราคา < 0 ? ` (฿${opt.ปรับราคา})` : '';
+        groups[groupName].forEach(function(opt) {
+          var priceText = opt.ปรับราคา > 0 ? ` (+฿${opt.ปรับราคา})` : opt.ปรับราคา < 0 ? ` (฿${opt.ปรับราคา})` : '';
           html += `
             <label class="flex items-center gap-2 p-2 border rounded hover:bg-gray-50 cursor-pointer">
               <input type="radio" name="option-${groupName}" value="${opt.id}" data-price="${opt.ปรับราคา}" onchange="updateOptionsPrice()">
@@ -2592,14 +2592,14 @@
     }
 
     function updateOptionsPrice() {
-      const productId = document.getElementById('selectedProductId').value;
-      const product = products.find(p => p.id === productId);
+      var productId = document.getElementById('selectedProductId').value;
+      var product = products.find(function(p) { return p.id; } === productId);
       if (!product) return;
 
-      let basePrice = parseFloat(product.ราคา);
+      var basePrice = parseFloat(product.ราคา);
 
       // Add selected options prices
-      document.querySelectorAll('#productOptionsContainer input[type="radio"]:checked').forEach(input => {
+      document.querySelectorAll('#productOptionsContainer input[type="radio"]:checked').forEach(function(input) {
         basePrice += parseFloat(input.dataset.price || 0);
       });
 
@@ -2607,32 +2607,32 @@
     }
 
     function decreaseQuantity() {
-      const input = document.getElementById('optionsQuantity');
+      var input = document.getElementById('optionsQuantity');
       if (input.value > 1) {
         input.value = parseInt(input.value) - 1;
       }
     }
 
     function increaseQuantity() {
-      const input = document.getElementById('optionsQuantity');
+      var input = document.getElementById('optionsQuantity');
       input.value = parseInt(input.value) + 1;
     }
 
     function confirmAddToCart() {
-      const productId = document.getElementById('selectedProductId').value;
-      const product = products.find(p => p.id === productId);
+      var productId = document.getElementById('selectedProductId').value;
+      var product = products.find(function(p) { return p.id; } === productId);
       if (!product) return;
 
-      const quantity = parseInt(document.getElementById('optionsQuantity').value);
-      const note = document.getElementById('optionsNote').value;
+      var quantity = parseInt(document.getElementById('optionsQuantity').value);
+      var note = document.getElementById('optionsNote').value;
 
       // Get selected options
-      const selectedOptions = {};
-      let finalPrice = parseFloat(product.ราคา);
+      var selectedOptions = {};
+      var finalPrice = parseFloat(product.ราคา);
 
-      document.querySelectorAll('#productOptionsContainer input[type="radio"]:checked').forEach(input => {
-        const groupName = input.name.replace('option-', '');
-        const option = productOptions.find(o => o.id === input.value);
+      document.querySelectorAll('#productOptionsContainer input[type="radio"]:checked').forEach(function(input) {
+        var groupName = input.name.replace('option-', '');
+        var option = productOptions.find(function(o) { return o.id; } === input.value);
         if (option) {
           selectedOptions[groupName] = option.ชื่อตัวเลือก;
           finalPrice += parseFloat(option.ปรับราคา || 0);
@@ -2661,8 +2661,8 @@
     }
 
     function updateCartDisplay() {
-      const container = document.getElementById('cartItemsList');
-      const checkoutBtn = document.getElementById('checkoutBtn');
+      var container = document.getElementById('cartItemsList');
+      var checkoutBtn = document.getElementById('checkoutBtn');
 
       if (cart.length === 0) {
         container.innerHTML = '<p class="text-gray-400 text-center py-8">ไม่มีสินค้าในตะกร้า</p>';
@@ -2672,14 +2672,14 @@
         return;
       }
 
-      let html = '';
-      let total = 0;
+      var html = '';
+      var total = 0;
 
-      cart.forEach((item, index) => {
-        const itemTotal = item.price * item.quantity;
+      cart.forEach(function(item, index) {
+        var itemTotal = item.price * item.quantity;
         total += itemTotal;
 
-        const optionsText = Object.values(item.options).join(', ');
+        var optionsText = Object.values(item.options).join(', ');
 
         html += `
           <div class="border-b pb-3 mb-3">
@@ -2742,7 +2742,7 @@
         showCancelButton: true,
         confirmButtonText: 'ยืนยัน',
         cancelButtonText: 'ยกเลิก'
-      }).then((result) => {
+      }).then(function(result) {
         if (result.isConfirmed) {
           cart = [];
           updateCartDisplay();
@@ -2753,7 +2753,7 @@
     function showPaymentModal() {
       if (cart.length === 0) return;
 
-      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      var total = cart.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0);
 
       document.getElementById('paymentItemCount').textContent = `${cart.length} รายการ`;
       document.getElementById('paymentTotal').textContent = formatCurrency(total);
@@ -2794,15 +2794,15 @@
     }
 
     function handlePaymentTypeChange(select) {
-      const container = select.closest('.payment-method-item');
-      const qrContainer = container.querySelector('.qr-container');
-      const qrImg = container.querySelector('.qr-code-img');
+      var container = select.closest('.payment-method-item');
+      var qrContainer = container.querySelector('.qr-container');
+      var qrImg = container.querySelector('.qr-code-img');
 
       if (select.value === 'QR Code') {
         // Generate QR Code
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const promptpayNumber = settings.เลขพร้อมเพย์ || '0123456789';
-        const qrUrl = `https://promptpay.io/${promptpayNumber}/${total}.png`;
+        var total = cart.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0);
+        var promptpayNumber = settings.เลขพร้อมเพย์ || '0123456789';
+        var qrUrl = `https://promptpay.io/${promptpayNumber}/${total}.png`;
 
         qrImg.src = qrUrl;
         qrContainer.classList.remove('hidden');
@@ -2812,8 +2812,8 @@
     }
 
     function addPaymentMethod() {
-      const container = document.getElementById('paymentMethodsContainer');
-      const newMethod = document.createElement('div');
+      var container = document.getElementById('paymentMethodsContainer');
+      var newMethod = document.createElement('div');
       newMethod.className = 'payment-method-item mb-4 p-4 border border-gray-200 rounded-lg';
       newMethod.innerHTML = `
         <div class="flex justify-between items-center mb-2">
@@ -2847,15 +2847,15 @@
     }
 
     function confirmPayment() {
-      const orderNumber = document.getElementById('paymentOrderNumber').value.trim();
-      const channel = document.getElementById('paymentChannel').value;
-      const customerName = document.getElementById('paymentCustomerName').value.trim();
+      var orderNumber = document.getElementById('paymentOrderNumber').value.trim();
+      var channel = document.getElementById('paymentChannel').value;
+      var customerName = document.getElementById('paymentCustomerName').value.trim();
 
       // Collect payment methods
-      const paymentMethods = [];
-      document.querySelectorAll('.payment-method-item').forEach(item => {
-        const type = item.querySelector('.payment-type').value;
-        const amount = parseFloat(item.querySelector('.payment-amount').value) || 0;
+      var paymentMethods = [];
+      document.querySelectorAll('.payment-method-item').forEach(function(item) {
+        var type = item.querySelector('.payment-type').value;
+        var amount = parseFloat(item.querySelector('.payment-amount').value) || 0;
         if (amount > 0) {
           paymentMethods.push({ type, amount });
         }
@@ -2870,13 +2870,13 @@
         return;
       }
 
-      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const paid = paymentMethods.reduce((sum, pm) => sum + pm.amount, 0);
+      var total = cart.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0);
+      var paid = paymentMethods.reduce(function(sum, pm) { return sum + pm.amount; }, 0);
 
       showLoading('กำลังบันทึกการขาย...');
 
       // Prepare order data
-      const orderData = {
+      var orderData = {
         sheetId: currentSheetId,
         orderNumber: orderNumber,
         channel: channel,
@@ -2923,16 +2923,16 @@
     function loadTodaySalesHistory() {
       google.script.run
         .withSuccessHandler(function(result) {
-          const tbody = document.getElementById('todaySalesTable');
+          var tbody = document.getElementById('todaySalesTable');
 
           if (!result.success || result.data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-8">ไม่มีรายการขาย</td></tr>';
             return;
           }
 
-          let html = '';
-          result.data.forEach(order => {
-            const statusBadge = order.สถานะ === 'เสร็จสิ้น' ? 'badge-success' :
+          var html = '';
+          result.data.forEach(function(order) {
+            var statusBadge = order.สถานะ === 'เสร็จสิ้น' ? 'badge-success' :
                                order.สถานะ === 'พร้อมเสิร์ฟ' ? 'badge-success' :
                                order.สถานะ === 'กำลังทำ' ? 'badge-info' : 'badge-warning';
 
@@ -2966,8 +2966,8 @@
       google.script.run
         .withSuccessHandler(function(result) {
           if (result.success) {
-            const order = result.data;
-            let html = `
+            var order = result.data;
+            var html = `
               <div class="space-y-4">
                 <div>
                   <p class="text-sm text-gray-600">วันที่-เวลา:</p>
@@ -3016,25 +3016,25 @@
         .withSuccessHandler(function(result) {
           if (!result.success) return;
 
-          const stats = result.stats;
+          var stats = result.stats;
           document.getElementById('queuePending').textContent = stats.pending;
           document.getElementById('queueInProgress').textContent = stats.inProgress;
           document.getElementById('queueReady').textContent = stats.ready;
           document.getElementById('queueTotal').textContent = stats.pending + stats.inProgress + stats.ready;
 
-          const container = document.getElementById('kitchenQueueContainer');
-          const orders = result.data;
+          var container = document.getElementById('kitchenQueueContainer');
+          var orders = result.data;
 
           if (orders.length === 0) {
             container.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">ไม่มีคิว</p>';
             return;
           }
 
-          let html = '';
-          orders.forEach(order => {
-            const statusClass = order.สถานะ === 'รอทำ' ? 'status-pending' :
+          var html = '';
+          orders.forEach(function(order) {
+            var statusClass = order.สถานะ === 'รอทำ' ? 'status-pending' :
                                order.สถานะ === 'กำลังทำ' ? 'status-in-progress' : 'status-ready';
-            const statusColor = order.สถานะ === 'รอทำ' ? 'warning' :
+            var statusColor = order.สถานะ === 'รอทำ' ? 'warning' :
                                order.สถานะ === 'กำลังทำ' ? 'info' : 'success';
 
             html += `
@@ -3093,7 +3093,7 @@
 
     function switchProductTab(tabName) {
       // Update tab buttons
-      document.querySelectorAll('.product-tab-btn').forEach(btn => {
+      document.querySelectorAll('.product-tab-btn').forEach(function(btn) {
         btn.classList.remove('border-green-600', 'text-green-600');
         btn.classList.add('border-transparent', 'text-gray-500');
       });
@@ -3101,7 +3101,7 @@
       event.target.classList.remove('border-transparent', 'text-gray-500');
 
       // Update tab content
-      document.querySelectorAll('.product-tab').forEach(tab => {
+      document.querySelectorAll('.product-tab').forEach(function(tab) {
         tab.classList.remove('active');
         tab.classList.add('hidden');
       });
@@ -3119,18 +3119,18 @@
     }
 
     function loadProductsTable() {
-      const tbody = document.getElementById('productsTableBody');
+      var tbody = document.getElementById('productsTableBody');
 
       if (!products || products.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-8">ไม่มีสินค้า</td></tr>';
         return;
       }
 
-      let html = '';
-      products.forEach(product => {
-        const category = categories.find(c => c.id === product.หมวดหมู่);
-        const categoryName = category ? category.ชื่อหมวดหมู่ : '-';
-        const statusBadge = product.สถานะ === 'เปิดใช้งาน' ? 'badge-success' : 'badge-danger';
+      var html = '';
+      products.forEach(function(product) {
+        var category = categories.find(function(c) { return c.id; } === product.หมวดหมู่);
+        var categoryName = category ? category.ชื่อหมวดหมู่ : '-';
+        var statusBadge = product.สถานะ === 'เปิดใช้งาน' ? 'badge-success' : 'badge-danger';
 
         html += `
           <tr>
@@ -3162,9 +3162,9 @@
       document.getElementById('productId').value = '';
 
       // Load categories into dropdown
-      const select = document.getElementById('productCategory');
+      var select = document.getElementById('productCategory');
       select.innerHTML = '<option value="">เลือกหมวดหมู่</option>';
-      categories.forEach(cat => {
+      categories.forEach(function(cat) {
         if (cat.สถานะ === 'เปิดใช้งาน') {
           select.innerHTML += `<option value="${cat.id}">${cat.ชื่อหมวดหมู่}</option>`;
         }
@@ -3174,7 +3174,7 @@
     }
 
     function editProduct(productId) {
-      const product = products.find(p => p.id === productId);
+      var product = products.find(function(p) { return p.id; } === productId);
       if (!product) return;
 
       document.getElementById('productModalTitle').textContent = 'แก้ไขสินค้า';
@@ -3187,9 +3187,9 @@
       document.getElementById('productActive').checked = product.สถานะ === 'เปิดใช้งาน';
 
       // Load categories
-      const select = document.getElementById('productCategory');
+      var select = document.getElementById('productCategory');
       select.innerHTML = '<option value="">เลือกหมวดหมู่</option>';
-      categories.forEach(cat => {
+      categories.forEach(function(cat) {
         select.innerHTML += `<option value="${cat.id}" ${cat.id === product.หมวดหมู่ ? 'selected' : ''}>${cat.ชื่อหมวดหมู่}</option>`;
       });
 
@@ -3203,7 +3203,7 @@
     function saveProduct(event) {
       event.preventDefault();
 
-      const productData = {
+      var productData = {
         id: document.getElementById('productId').value,
         sheetId: currentSheetId,
         ชื่อสินค้า: document.getElementById('productName').value,
@@ -3246,7 +3246,7 @@
         confirmButtonText: 'ลบ',
         cancelButtonText: 'ยกเลิก',
         confirmButtonColor: '#ef4444'
-      }).then((result) => {
+      }).then(function(result) {
         if (result.isConfirmed) {
           google.script.run
             .withSuccessHandler(function(result) {
@@ -3269,16 +3269,16 @@
     }
 
     function loadCategoriesGrid() {
-      const grid = document.getElementById('categoriesGrid');
+      var grid = document.getElementById('categoriesGrid');
 
       if (!categories || categories.length === 0) {
         grid.innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">ไม่มีหมวดหมู่</p>';
         return;
       }
 
-      let html = '';
-      categories.forEach(cat => {
-        const statusBadge = cat.สถานะ === 'เปิดใช้งาน' ? 'badge-success' : 'badge-danger';
+      var html = '';
+      categories.forEach(function(cat) {
+        var statusBadge = cat.สถานะ === 'เปิดใช้งาน' ? 'badge-success' : 'badge-danger';
         html += `
           <div class="card">
             <div class="flex items-center gap-3 mb-3">
@@ -3311,7 +3311,7 @@
     }
 
     function editCategory(categoryId) {
-      const category = categories.find(c => c.id === categoryId);
+      var category = categories.find(function(c) { return c.id; } === categoryId);
       if (!category) return;
 
       document.getElementById('categoryModalTitle').textContent = 'แก้ไขหมวดหมู่';
@@ -3329,7 +3329,7 @@
     function saveCategory(event) {
       event.preventDefault();
 
-      const categoryData = {
+      var categoryData = {
         id: document.getElementById('categoryId').value,
         sheetId: currentSheetId,
         ชื่อหมวดหมู่: document.getElementById('categoryName').value,
@@ -3369,7 +3369,7 @@
         confirmButtonText: 'ลบ',
         cancelButtonText: 'ยกเลิก',
         confirmButtonColor: '#ef4444'
-      }).then((result) => {
+      }).then(function(result) {
         if (result.isConfirmed) {
           google.script.run
             .withSuccessHandler(function(result) {
@@ -3392,7 +3392,7 @@
     }
 
     function loadOptionsPage() {
-      const container = document.getElementById('optionGroupsContainer');
+      var container = document.getElementById('optionGroupsContainer');
 
       google.script.run
         .withSuccessHandler(function(result) {
@@ -3407,16 +3407,16 @@
     }
 
     function displayOptionGroups(groups) {
-      const container = document.getElementById('optionGroupsContainer');
+      var container = document.getElementById('optionGroupsContainer');
 
       if (!groups || groups.length === 0) {
         container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีตัวเลือกสินค้า</p></div>';
         return;
       }
 
-      let html = '';
-      groups.forEach(group => {
-        const typeText = group.type === 'single' ? 'เลือกได้ 1 รายการ' : 'เลือกได้หลายรายการ';
+      var html = '';
+      groups.forEach(function(group) {
+        var typeText = group.type === 'single' ? 'เลือกได้ 1 รายการ' : 'เลือกได้หลายรายการ';
 
         html += `
           <div class="card mb-4">
@@ -3443,11 +3443,11 @@
                 <tbody>
         `;
 
-        group.options.forEach(option => {
-          const priceDisplay = option.priceModifier >= 0 ?
+        group.options.forEach(function(option) {
+          var priceDisplay = option.priceModifier >= 0 ?
             `+${option.priceModifier} ฿` :
             `${option.priceModifier} ฿`;
-          const statusBadge = option.status === 'เปิดใช้งาน' ? 'badge-success' : 'badge-secondary';
+          var statusBadge = option.status === 'เปิดใช้งาน' ? 'badge-success' : 'badge-secondary';
 
           html += `
             <tr class="border-t">
@@ -3533,7 +3533,7 @@
     function saveProductOption(event) {
       event.preventDefault();
 
-      const optionData = {
+      var optionData = {
         id: document.getElementById('optionId').value,
         groupName: document.getElementById('optionGroupName').value,
         groupType: document.getElementById('optionGroupType').value,
@@ -3572,7 +3572,7 @@
         showCancelButton: true,
         confirmButtonText: 'ลบ',
         cancelButtonText: 'ยกเลิก'
-      }).then((result) => {
+      }).then(function(result) {
         if (result.isConfirmed) {
           google.script.run
             .withSuccessHandler(function(result) {
@@ -3599,19 +3599,19 @@
     // ===================================
 
     function loadMaterialsPage() {
-      const tbody = document.getElementById('materialsTableBody');
+      var tbody = document.getElementById('materialsTableBody');
 
       if (!materials || materials.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500 py-8">ไม่มีวัตถุดิบ</td></tr>';
         return;
       }
 
-      let html = '';
-      materials.forEach(material => {
-        const stock = parseFloat(material.สต็อกคงเหลือ || 0);
-        const reorder = parseFloat(material.จุดสั่งซื้อ || 0);
-        const statusBadge = stock <= reorder ? 'badge-danger' : 'badge-success';
-        const statusText = stock <= reorder ? 'ต่ำ' : 'ปกติ';
+      var html = '';
+      materials.forEach(function(material) {
+        var stock = parseFloat(material.สต็อกคงเหลือ || 0);
+        var reorder = parseFloat(material.จุดสั่งซื้อ || 0);
+        var statusBadge = stock <= reorder ? 'badge-danger' : 'badge-success';
+        var statusText = stock <= reorder ? 'ต่ำ' : 'ปกติ';
 
         html += `
           <tr>
@@ -3644,7 +3644,7 @@
     }
 
     function editMaterial(materialId) {
-      const material = materials.find(m => m.id === materialId);
+      var material = materials.find(function(m) { return m.id; } === materialId);
       if (!material) return;
 
       document.getElementById('materialModalTitle').textContent = 'แก้ไขวัตถุดิบ';
@@ -3664,7 +3664,7 @@
     function saveMaterial(event) {
       event.preventDefault();
 
-      const materialData = {
+      var materialData = {
         id: document.getElementById('materialId').value,
         sheetId: currentSheetId,
         ชื่อวัตถุดิบ: document.getElementById('materialName').value,
@@ -3706,7 +3706,7 @@
         confirmButtonText: 'ลบ',
         cancelButtonText: 'ยกเลิก',
         confirmButtonColor: '#ef4444'
-      }).then((result) => {
+      }).then(function(result) {
         if (result.isConfirmed) {
           google.script.run
             .withSuccessHandler(function(result) {
@@ -3734,29 +3734,29 @@
 
     function loadCostsPage() {
       // Set today's date
-      const today = new Date().toISOString().split('T')[0];
+      var today = new Date().toISOString().split('T')[0];
       document.getElementById('dailyCostDate').value = today;
 
       // Initialize year selector
-      const yearSelect = document.getElementById('monthlyCostYear');
-      const currentYear = new Date().getFullYear();
+      var yearSelect = document.getElementById('monthlyCostYear');
+      var currentYear = new Date().getFullYear();
       yearSelect.innerHTML = '';
-      for (let i = currentYear - 2; i <= currentYear + 1; i++) {
+      for (var i = currentYear - 2; i <= currentYear + 1; i++) {
         yearSelect.innerHTML += `<option value="${i}" ${i === currentYear ? 'selected' : ''}>${i + 543}</option>`;
       }
 
-      const month = new Date().getMonth() + 1;
+      var month = new Date().getMonth() + 1;
       document.getElementById('monthlyCostMonth').value = month;
     }
 
     function switchCostTab(tabName) {
-      document.querySelectorAll('.cost-tab-btn').forEach(btn => {
+      document.querySelectorAll('.cost-tab-btn').forEach(function(btn) {
         btn.classList.remove('border-green-600', 'text-green-600');
         btn.classList.add('border-transparent', 'text-gray-500');
       });
       event.target.classList.add('border-green-600', 'text-green-600');
 
-      document.querySelectorAll('.cost-tab').forEach(tab => {
+      document.querySelectorAll('.cost-tab').forEach(function(tab) {
         tab.classList.remove('active');
         tab.classList.add('hidden');
       });
@@ -3765,7 +3765,7 @@
     }
 
     function showAddDailyCostModal() {
-      const today = new Date().toISOString().split('T')[0];
+      var today = new Date().toISOString().split('T')[0];
       document.getElementById('costId').value = '';
       document.getElementById('costDate').value = today;
       document.getElementById('costCategory').value = 'วัตถุดิบ';
@@ -3783,7 +3783,7 @@
     function saveDailyCost(event) {
       event.preventDefault();
 
-      const costData = {
+      var costData = {
         id: document.getElementById('costId').value,
         date: document.getElementById('costDate').value,
         category: document.getElementById('costCategory').value,
@@ -3811,7 +3811,7 @@
     }
 
     function loadDailyCosts() {
-      const date = document.getElementById('dailyCostDate').value;
+      var date = document.getElementById('dailyCostDate').value;
       if (!date) {
         showToast('กรุณาเลือกวันที่', 'warning');
         return;
@@ -3831,18 +3831,18 @@
     }
 
     function displayDailyCosts(costs) {
-      const tbody = document.getElementById('dailyCostsTableBody');
+      var tbody = document.getElementById('dailyCostsTableBody');
 
       if (!costs || costs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">ไม่มีรายจ่ายในวันนี้</td></tr>';
         return;
       }
 
-      let html = '';
-      let total = 0;
+      var html = '';
+      var total = 0;
 
-      costs.forEach(cost => {
-        const amount = parseFloat(cost.จำนวนเงิน || 0);
+      costs.forEach(function(cost) {
+        var amount = parseFloat(cost.จำนวนเงิน || 0);
         total += amount;
 
         html += `
@@ -3880,7 +3880,7 @@
       google.script.run
         .withSuccessHandler(function(result) {
           if (result.success && result.cost) {
-            const cost = result.cost;
+            var cost = result.cost;
             document.getElementById('costId').value = cost.รหัส;
             document.getElementById('costDate').value = cost.วันที่;
             document.getElementById('costCategory').value = cost.ประเภท;
@@ -3903,7 +3903,7 @@
         showCancelButton: true,
         confirmButtonText: 'ลบ',
         cancelButtonText: 'ยกเลิก'
-      }).then((result) => {
+      }).then(function(result) {
         if (result.isConfirmed) {
           google.script.run
             .withSuccessHandler(function(result) {
@@ -3925,8 +3925,8 @@
     }
 
     function loadMonthlyCosts() {
-      const month = document.getElementById('monthlyCostMonth').value;
-      const year = document.getElementById('monthlyCostYear').value;
+      var month = document.getElementById('monthlyCostMonth').value;
+      var year = document.getElementById('monthlyCostYear').value;
 
       if (!month || !year) {
         showToast('กรุณาเลือกเดือนและปี', 'warning');
@@ -3947,19 +3947,19 @@
     }
 
     function displayMonthlyCosts(summary) {
-      const container = document.getElementById('monthlyCostsSummary');
+      var container = document.getElementById('monthlyCostsSummary');
 
       if (!summary) {
         container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
         return;
       }
 
-      const totalCost = parseFloat(summary.totalCost || 0);
-      const totalSales = parseFloat(summary.totalSales || 0);
-      const profit = totalSales - totalCost;
-      const profitColor = profit >= 0 ? 'text-green-600' : 'text-red-600';
+      var totalCost = parseFloat(summary.totalCost || 0);
+      var totalSales = parseFloat(summary.totalSales || 0);
+      var profit = totalSales - totalCost;
+      var profitColor = profit >= 0 ? 'text-green-600' : 'text-red-600';
 
-      let html = `
+      var html = `
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div class="card">
             <h3 class="text-sm text-gray-600 mb-2">ต้นทุนรวม</h3>
@@ -3990,9 +3990,9 @@
       `;
 
       if (summary.categoryTotals && summary.categoryTotals.length > 0) {
-        summary.categoryTotals.forEach(cat => {
-          const amount = parseFloat(cat.amount || 0);
-          const percent = totalCost > 0 ? (amount / totalCost * 100).toFixed(1) : 0;
+        summary.categoryTotals.forEach(function(cat) {
+          var amount = parseFloat(cat.amount || 0);
+          var percent = totalCost > 0 ? (amount / totalCost * 100).toFixed(1) : 0;
 
           html += `
             <tr class="border-t">
@@ -4025,7 +4025,7 @@
       `;
 
       if (summary.dailyCosts && summary.dailyCosts.length > 0) {
-        summary.dailyCosts.forEach(day => {
+        summary.dailyCosts.forEach(function(day) {
           html += `
             <tr class="border-t">
               <td class="px-4 py-3">${day.date}</td>
@@ -4050,8 +4050,8 @@
 
     function loadReportsPage() {
       // Set default dates for reports
-      const today = new Date().toISOString().split('T')[0];
-      const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+      var today = new Date().toISOString().split('T')[0];
+      var firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
 
       if (document.getElementById('salesStartDate')) {
         document.getElementById('salesStartDate').value = firstDayOfMonth;
@@ -4070,8 +4070,8 @@
     }
 
     function showSalesReport() {
-      const startDate = document.getElementById('salesStartDate').value;
-      const endDate = document.getElementById('salesEndDate').value;
+      var startDate = document.getElementById('salesStartDate').value;
+      var endDate = document.getElementById('salesEndDate').value;
 
       if (!startDate || !endDate) {
         showToast('กรุณาเลือกช่วงวันที่', 'warning');
@@ -4097,18 +4097,18 @@
     }
 
     function displaySalesReport(report) {
-      const container = document.getElementById('salesReportResult');
+      var container = document.getElementById('salesReportResult');
 
       if (!report) {
         container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
         return;
       }
 
-      const totalSales = parseFloat(report.totalSales || 0);
-      const totalOrders = parseInt(report.totalOrders || 0);
-      const averageOrder = parseFloat(report.averageOrder || 0);
+      var totalSales = parseFloat(report.totalSales || 0);
+      var totalOrders = parseInt(report.totalOrders || 0);
+      var averageOrder = parseFloat(report.averageOrder || 0);
 
-      let html = `
+      var html = `
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div class="card">
             <h3 class="text-sm text-gray-600 mb-2">ยอดขายรวม</h3>
@@ -4140,10 +4140,10 @@
       `;
 
       if (report.dailySales && report.dailySales.length > 0) {
-        report.dailySales.forEach(day => {
-          const sales = parseFloat(day.sales || 0);
-          const orders = parseInt(day.orders || 0);
-          const avg = orders > 0 ? sales / orders : 0;
+        report.dailySales.forEach(function(day) {
+          var sales = parseFloat(day.sales || 0);
+          var orders = parseInt(day.orders || 0);
+          var avg = orders > 0 ? sales / orders : 0;
 
           html += `
             <tr class="border-t">
@@ -4179,9 +4179,9 @@
       `;
 
       if (report.paymentMethods && report.paymentMethods.length > 0) {
-        report.paymentMethods.forEach(method => {
-          const amount = parseFloat(method.amount || 0);
-          const percent = totalSales > 0 ? (amount / totalSales * 100).toFixed(1) : 0;
+        report.paymentMethods.forEach(function(method) {
+          var amount = parseFloat(method.amount || 0);
+          var percent = totalSales > 0 ? (amount / totalSales * 100).toFixed(1) : 0;
 
           html += `
             <tr class="border-t">
@@ -4206,8 +4206,8 @@
     }
 
     function showProfitLossReport() {
-      const month = document.getElementById('plMonth').value;
-      const year = document.getElementById('plYear').value;
+      var month = document.getElementById('plMonth').value;
+      var year = document.getElementById('plYear').value;
 
       if (!month || !year) {
         showToast('กรุณาเลือกเดือนและปี', 'warning');
@@ -4233,24 +4233,24 @@
     }
 
     function displayProfitLossReport(report) {
-      const container = document.getElementById('profitLossResult');
+      var container = document.getElementById('profitLossResult');
 
       if (!report) {
         container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
         return;
       }
 
-      const totalSales = parseFloat(report.totalSales || 0);
-      const productCost = parseFloat(report.productCost || 0);
-      const operatingCosts = parseFloat(report.operatingCosts || 0);
-      const grossProfit = parseFloat(report.grossProfit || 0);
-      const netProfit = parseFloat(report.netProfit || 0);
-      const profitMargin = parseFloat(report.profitMargin || 0);
+      var totalSales = parseFloat(report.totalSales || 0);
+      var productCost = parseFloat(report.productCost || 0);
+      var operatingCosts = parseFloat(report.operatingCosts || 0);
+      var grossProfit = parseFloat(report.grossProfit || 0);
+      var netProfit = parseFloat(report.netProfit || 0);
+      var profitMargin = parseFloat(report.profitMargin || 0);
 
-      const netProfitColor = netProfit >= 0 ? 'text-green-600' : 'text-red-600';
-      const profitMarginColor = profitMargin >= 0 ? 'text-green-600' : 'text-red-600';
+      var netProfitColor = netProfit >= 0 ? 'text-green-600' : 'text-red-600';
+      var profitMarginColor = profitMargin >= 0 ? 'text-green-600' : 'text-red-600';
 
-      let html = `
+      var html = `
         <div class="card">
           <h3 class="text-lg font-bold mb-4">รายงานกำไร-ขาดทุน</h3>
           <div class="space-y-4">
@@ -4291,9 +4291,9 @@
     }
 
     function showBestSellersReport() {
-      const startDate = document.getElementById('bestSellerStartDate').value;
-      const endDate = document.getElementById('bestSellerEndDate').value;
-      const limit = parseInt(document.getElementById('bestSellerLimit').value) || 10;
+      var startDate = document.getElementById('bestSellerStartDate').value;
+      var endDate = document.getElementById('bestSellerEndDate').value;
+      var limit = parseInt(document.getElementById('bestSellerLimit').value) || 10;
 
       if (!startDate || !endDate) {
         showToast('กรุณาเลือกช่วงวันที่', 'warning');
@@ -4319,22 +4319,22 @@
     }
 
     function displayBestSellersReport(report) {
-      const container = document.getElementById('bestSellersResult');
+      var container = document.getElementById('bestSellersResult');
 
       if (!report || report.length === 0) {
         container.innerHTML = '<div class="card"><p class="text-center text-gray-500 py-8">ไม่มีข้อมูล</p></div>';
         return;
       }
 
-      let totalQuantity = 0;
-      let totalRevenue = 0;
+      var totalQuantity = 0;
+      var totalRevenue = 0;
 
-      report.forEach(item => {
+      report.forEach(function(item) {
         totalQuantity += parseInt(item.quantity || 0);
         totalRevenue += parseFloat(item.revenue || 0);
       });
 
-      let html = `
+      var html = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div class="card">
             <h3 class="text-sm text-gray-600 mb-2">จำนวนสินค้าที่ขายทั้งหมด</h3>
@@ -4362,13 +4362,13 @@
               <tbody>
       `;
 
-      report.forEach((item, index) => {
-        const quantity = parseInt(item.quantity || 0);
-        const revenue = parseFloat(item.revenue || 0);
-        const percent = totalRevenue > 0 ? (revenue / totalRevenue * 100).toFixed(1) : 0;
+      report.forEach(function(item, index) {
+        var quantity = parseInt(item.quantity || 0);
+        var revenue = parseFloat(item.revenue || 0);
+        var percent = totalRevenue > 0 ? (revenue / totalRevenue * 100).toFixed(1) : 0;
 
         // Medal emoji for top 3
-        let rankDisplay = index + 1;
+        var rankDisplay = index + 1;
         if (index === 0) rankDisplay = '🥇 1';
         else if (index === 1) rankDisplay = '🥈 2';
         else if (index === 2) rankDisplay = '🥉 3';
@@ -4395,8 +4395,8 @@
     }
 
     function loadOrderHistory() {
-      const startDate = document.getElementById('historyStartDate').value;
-      const endDate = document.getElementById('historyEndDate').value;
+      var startDate = document.getElementById('historyStartDate').value;
+      var endDate = document.getElementById('historyEndDate').value;
 
       if (!startDate || !endDate) {
         Swal.fire({
@@ -4412,16 +4412,16 @@
       google.script.run
         .withSuccessHandler(function(result) {
           hideLoading();
-          const tbody = document.getElementById('historyTableBody');
+          var tbody = document.getElementById('historyTableBody');
 
           if (!result.success || result.data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-500 py-8">ไม่พบรายการ</td></tr>';
             return;
           }
 
-          let html = '';
-          result.data.forEach(order => {
-            const statusBadge = order.สถานะ === 'เสร็จสิ้น' ? 'badge-success' : 'badge-info';
+          var html = '';
+          result.data.forEach(function(order) {
+            var statusBadge = order.สถานะ === 'เสร็จสิ้น' ? 'badge-success' : 'badge-info';
             html += `
               <tr>
                 <td>${order.เลขที่ออเดอร์}</td>
@@ -4459,9 +4459,9 @@
           document.getElementById('licenseType').textContent = currentUser.licenseType === 'monthly' ? 'รายเดือน' : 'รายปี';
           document.getElementById('licenseExpiry').textContent = new Date(currentUser.licenseExpiry).toLocaleDateString('th-TH');
 
-          const daysLeft = Math.ceil((new Date(currentUser.licenseExpiry) - new Date()) / (1000 * 60 * 60 * 24));
-          const statusBadge = daysLeft > 30 ? 'badge-success' : daysLeft > 0 ? 'badge-warning' : 'badge-danger';
-          const statusText = daysLeft > 30 ? 'ใช้งานได้' : daysLeft > 0 ? `เหลือ ${daysLeft} วัน` : 'หมดอายุ';
+          var daysLeft = Math.ceil((new Date(currentUser.licenseExpiry) - new Date()) / (1000 * 60 * 60 * 24));
+          var statusBadge = daysLeft > 30 ? 'badge-success' : daysLeft > 0 ? 'badge-warning' : 'badge-danger';
+          var statusText = daysLeft > 30 ? 'ใช้งานได้' : daysLeft > 0 ? `เหลือ ${daysLeft} วัน` : 'หมดอายุ';
 
           document.getElementById('licenseStatus').className = `badge ${statusBadge}`;
           document.getElementById('licenseStatus').textContent = statusText;
@@ -4472,7 +4472,7 @@
     function saveShopInfo(event) {
       event.preventDefault();
 
-      const data = {
+      var data = {
         sheetId: currentSheetId,
         ชื่อร้าน: document.getElementById('settingShopName').value,
         ที่อยู่: document.getElementById('settingShopAddress').value,
@@ -4502,7 +4502,7 @@
     function savePromptPaySettings(event) {
       event.preventDefault();
 
-      const data = {
+      var data = {
         sheetId: currentSheetId,
         เลขพร้อมเพย์: document.getElementById('settingPromptPay').value,
         ชื่อบัญชี: document.getElementById('settingPromptPayName').value
@@ -4536,9 +4536,9 @@
     function changePassword(event) {
       event.preventDefault();
 
-      const oldPassword = document.getElementById('oldPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
+      var oldPassword = document.getElementById('oldPassword').value;
+      var newPassword = document.getElementById('newPassword').value;
+      var confirmPassword = document.getElementById('confirmPassword').value;
 
       if (newPassword !== confirmPassword) {
         Swal.fire({
@@ -4560,7 +4560,7 @@
               icon: 'success',
               title: 'เปลี่ยนรหัสผ่านสำเร็จ',
               text: 'กรุณาเข้าสู่ระบบใหม่อีกครั้ง'
-            }).then(() => {
+            }).then(function() {
               logout();
             });
           } else {
@@ -4605,7 +4605,7 @@
     function handleSuperAdminLogin(event) {
       event.preventDefault();
 
-      const password = document.getElementById('superAdminPassword').value;
+      var password = document.getElementById('superAdminPassword').value;
 
       showLoading('กำลังเข้าสู่ระบบ...');
 
@@ -4659,18 +4659,18 @@
     }
 
     function renderShopsTable(shops) {
-      const tbody = document.getElementById('shopsTableBody');
+      var tbody = document.getElementById('shopsTableBody');
 
       if (!shops || shops.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-8">ไม่มีร้านค้า</td></tr>';
         return;
       }
 
-      let html = '';
-      shops.forEach(shop => {
-        const daysLeft = Math.ceil((new Date(shop.วันหมดอายุ) - new Date()) / (1000 * 60 * 60 * 24));
-        const statusBadge = daysLeft > 30 ? 'badge-success' : daysLeft > 0 ? 'badge-warning' : 'badge-danger';
-        const statusText = daysLeft > 30 ? 'ใช้งานได้' : daysLeft > 0 ? `เหลือ ${daysLeft} วัน` : 'หมดอายุ';
+      var html = '';
+      shops.forEach(function(shop) {
+        var daysLeft = Math.ceil((new Date(shop.วันหมดอายุ) - new Date()) / (1000 * 60 * 60 * 24));
+        var statusBadge = daysLeft > 30 ? 'badge-success' : daysLeft > 0 ? 'badge-warning' : 'badge-danger';
+        var statusText = daysLeft > 30 ? 'ใช้งานได้' : daysLeft > 0 ? `เหลือ ${daysLeft} วัน` : 'หมดอายุ';
 
         html += `
           <tr>
@@ -4703,7 +4703,7 @@
     function createShop(event) {
       event.preventDefault();
 
-      const shopData = {
+      var shopData = {
         shopName: document.getElementById('newShopName').value,
         email: document.getElementById('newShopEmail').value,
         password: document.getElementById('newShopPassword').value,
@@ -4751,7 +4751,7 @@
         showCancelButton: true,
         confirmButtonText: 'ยืนยัน',
         cancelButtonText: 'ยกเลิก'
-      }).then((result) => {
+      }).then(function(result) {
         if (result.isConfirmed && result.value) {
           showLoading('กำลังต่ออายุ...');
 
